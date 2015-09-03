@@ -37,6 +37,11 @@ Brief summary/description of the plugin.
     def documentation = "http://grails.org/plugin/banner-spring-security-saml"
 
     def doWithWebDescriptor = { xml ->
+        def conf = SpringSecurityUtils.securityConfig
+        if (!conf || !conf.saml.active) {
+            return
+        }
+
         def listenerElements = xml.'listener'[0]
         listenerElements + {
             'listener' {
@@ -48,6 +53,10 @@ Brief summary/description of the plugin.
 
     def doWithSpring = {
         def conf = SpringSecurityUtils.securityConfig
+
+        if (!conf || !conf.saml.active) {
+            return
+        }
 
         samlAuthenticationProvider(BannerSamlAuthenticationProvider) {
             userDetails = ref('userDetailsService')
@@ -76,17 +85,17 @@ Brief summary/description of the plugin.
     }
 
     def doWithApplicationContext = { ctx ->
-    // build providers list here to give dependent plugins a chance to register some
+        // build providers list here to give dependent plugins a chance to register some
         def conf = SpringSecurityUtils.securityConfig
+        if (!conf || !conf.saml.active) {
+            return
+        }
+
         def providerNames = []
         if (conf.providerNames) {
             providerNames.addAll conf.providerNames
         } else {
-            if (isSsbEnabled())
-                providerNames = ['samlAuthenticationProvider', 'selfServiceBannerAuthenticationProvider', 'bannerAuthenticationProvider']
-            else
-                providerNames = ['samlAuthenticationProvider', 'bannerAuthenticationProvider']
-
+            providerNames = ['samlAuthenticationProvider']
         }
         applicationContext.authenticationManager.providers = createBeanList(providerNames, applicationContext)    }
 
