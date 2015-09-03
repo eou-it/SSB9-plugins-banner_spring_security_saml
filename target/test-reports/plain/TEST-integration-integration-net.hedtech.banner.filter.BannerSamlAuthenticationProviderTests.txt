@@ -1,0 +1,38 @@
+Testsuite: net.hedtech.banner.filter.BannerSamlAuthenticationProviderTests
+Tests run: 5, Failures: 2, Errors: 1, Time elapsed: 1.142 sec
+------------- Standard Output ---------------
+--Output from testAuthenticateFailure--
+--Output from testAdminDoFilter--
+--Output from testAuthenticateNoBannerUser--
+--Output from testAuthenticateSSBUser--
+--Output from testAuthenticateOracleDisabledUser--
+------------- ---------------- ---------------
+------------- Standard Error -----------------
+--Output from testAuthenticateFailure--
+--Output from testAdminDoFilter--
+--Output from testAuthenticateNoBannerUser--
+--Output from testAuthenticateSSBUser--
+--Output from testAuthenticateOracleDisabledUser--
+------------- ---------------- ---------------
+
+Testcase: testAuthenticateFailure took 1.033 sec
+	FAILED
+java.lang.AssertionError: expected:<System is configured for SAML authentication and identity assertion UDC_IDENTIFIER is null> but was:<null>
+junit.framework.AssertionFailedError: java.lang.AssertionError: expected:<System is configured for SAML authentication and identity assertion UDC_IDENTIFIER is null> but was:<null>
+	at net.hedtech.banner.filter.BannerSamlAuthenticationProviderTests.testAuthenticateFailure(BannerSamlAuthenticationProviderTests.groovy:90)
+
+Testcase: testAdminDoFilter took 0.024 sec
+Testcase: testAuthenticateNoBannerUser took 0.037 sec
+	FAILED
+java.lang.AssertionError: expected:<System is configured for external authentication, identity assertion 2 does not map to a Banner user> but was:<null>
+junit.framework.AssertionFailedError: java.lang.AssertionError: expected:<System is configured for external authentication, identity assertion 2 does not map to a Banner user> but was:<null>
+	at net.hedtech.banner.filter.BannerSamlAuthenticationProviderTests.testAuthenticateNoBannerUser(BannerSamlAuthenticationProviderTests.groovy:119)
+
+Testcase: testAuthenticateSSBUser took 0.005 sec
+Testcase: testAuthenticateOracleDisabledUser took 0.027 sec
+	Caused an ERROR
+null
+java.lang.NullPointerException
+	at net.hedtech.banner.security.BannerSamlAuthenticationProvider.authenticate(BannerSamlAuthenticationProvider.groovy:55)
+	at net.hedtech.banner.filter.BannerSamlAuthenticationProviderTests.testAuthenticateOracleDisabledUser(BannerSamlAuthenticationProviderTests.groovy:157)
+

@@ -1,0 +1,16 @@
+Testsuite: net.hedtech.banner.filter.BannerSamlSessionFilterTest
+Tests run: 3, Failures: 0, Errors: 0, Time elapsed: 0.255 sec
+------------- Standard Output ---------------
+--Output from testDoFilterIfSessionIsNull--
+--Output from testDoFilterIfSessionIsNullAndFilterURLIsDifferent--
+--Output from testDoFilterIfSessionIsNotNull--
+------------- ---------------- ---------------
+------------- Standard Error -----------------
+--Output from testDoFilterIfSessionIsNull--
+--Output from testDoFilterIfSessionIsNullAndFilterURLIsDifferent--
+--Output from testDoFilterIfSessionIsNotNull--
+------------- ---------------- ---------------
+
+Testcase: testDoFilterIfSessionIsNull took 0.037 sec
+Testcase: testDoFilterIfSessionIsNullAndFilterURLIsDifferent took 0.186 sec
+Testcase: testDoFilterIfSessionIsNotNull took 0.024 sec

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites>
+  <testsuite errors="1" failures="2" hostname="INR1400697" id="0" name="BannerSamlAuthenticationProviderTests" package="net.hedtech.banner.filter" tests="5" time="1.142" timestamp="2015-09-01T06:50:56">
+      <properties />
+
+      <testcase classname="net.hedtech.banner.filter.BannerSamlAuthenticationProviderTests" name="testAuthenticateFailure" time="1.034">
+          <failure message="java.lang.AssertionError: expected:&lt;System is configured for SAML authentication and identity assertion UDC_IDENTIFIER is null&gt; but was:&lt;null&gt;" type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError: java.lang.AssertionError: expected:&lt;System is configured for SAML authentication and identity assertion UDC_IDENTIFIER is null&gt; but was:&lt;null&gt;
+	at net.hedtech.banner.filter.BannerSamlAuthenticationProviderTests.testAuthenticateFailure(BannerSamlAuthenticationProviderTests.groovy:90)
+</failure>
+
+      </testcase>
+
+      <testcase classname="net.hedtech.banner.filter.BannerSamlAuthenticationProviderTests" name="testAdminDoFilter" time="0.024" />
+
+      <testcase classname="net.hedtech.banner.filter.BannerSamlAuthenticationProviderTests" name="testAuthenticateNoBannerUser" time="0.037">
+          <failure message="java.lang.AssertionError: expected:&lt;System is configured for external authentication, identity assertion 2 does not map to a Banner user&gt; but was:&lt;null&gt;" type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError: java.lang.AssertionError: expected:&lt;System is configured for external authentication, identity assertion 2 does not map to a Banner user&gt; but was:&lt;null&gt;
+	at net.hedtech.banner.filter.BannerSamlAuthenticationProviderTests.testAuthenticateNoBannerUser(BannerSamlAuthenticationProviderTests.groovy:119)
+</failure>
+
+      </testcase>
+
+      <testcase classname="net.hedtech.banner.filter.BannerSamlAuthenticationProviderTests" name="testAuthenticateSSBUser" time="0.004" />
+
+      <testcase classname="net.hedtech.banner.filter.BannerSamlAuthenticationProviderTests" name="testAuthenticateOracleDisabledUser" time="0.027">
+          <error type="java.lang.NullPointerException">java.lang.NullPointerException
+	at net.hedtech.banner.security.BannerSamlAuthenticationProvider.authenticate(BannerSamlAuthenticationProvider.groovy:55)
+	at net.hedtech.banner.filter.BannerSamlAuthenticationProviderTests.testAuthenticateOracleDisabledUser(BannerSamlAuthenticationProviderTests.groovy:157)
+</error>
+
+      </testcase>
+
+      <system-out><![CDATA[--Output from testAuthenticateFailure--
+--Output from testAdminDoFilter--
+--Output from testAuthenticateNoBannerUser--
+--Output from testAuthenticateSSBUser--
+--Output from testAuthenticateOracleDisabledUser--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from testAuthenticateFailure--
+--Output from testAdminDoFilter--
+--Output from testAuthenticateNoBannerUser--
+--Output from testAuthenticateSSBUser--
+--Output from testAuthenticateOracleDisabledUser--
+]]></system-err>
+
+  </testsuite>
+  <testsuite errors="0" failures="0" hostname="INR1400697" id="1" name="BannerSamlLogoutFilterTest" package="net.hedtech.banner.filter" tests="3" time="0.486" timestamp="2015-09-01T06:50:55">
+      <properties />
+
+      <testcase classname="net.hedtech.banner.filter.BannerSamlLogoutFilterTest" name="requiresLogout" time="0.44" />
+
+      <testcase classname="net.hedtech.banner.filter.BannerSamlLogoutFilterTest" name="constructorStringLogoutHandlersLogoutHandlersNotNullFilterProcessUrl" time="0.011" />
+
+      <testcase classname="net.hedtech.banner.filter.BannerSamlLogoutFilterTest" name="constructorLogoutSuccessHandlerLogoutHandlersLogoutHandlersNotNullFilterProcessUrl" time="0.012" />
+
+      <system-out><![CDATA[--Output from requiresLogout--
+--Output from constructorStringLogoutHandlersLogoutHandlersNotNullFilterProcessUrl--
+--Output from constructorLogoutSuccessHandlerLogoutHandlersLogoutHandlersNotNullFilterProcessUrl--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from requiresLogout--
+--Output from constructorStringLogoutHandlersLogoutHandlersNotNullFilterProcessUrl--
+--Output from constructorLogoutSuccessHandlerLogoutHandlersLogoutHandlersNotNullFilterProcessUrl--
+]]></system-err>
+
+  </testsuite>
+  <testsuite errors="0" failures="0" hostname="INR1400697" id="2" name="BannerSamlSessionFilterTest" package="net.hedtech.banner.filter" tests="3" time="0.255" timestamp="2015-09-01T06:50:56">
+      <properties />
+
+      <testcase classname="net.hedtech.banner.filter.BannerSamlSessionFilterTest" name="testDoFilterIfSessionIsNull" time="0.037" />
+
+      <testcase classname="net.hedtech.banner.filter.BannerSamlSessionFilterTest" name="testDoFilterIfSessionIsNullAndFilterURLIsDifferent" time="0.186" />
+
+      <testcase classname="net.hedtech.banner.filter.BannerSamlSessionFilterTest" name="testDoFilterIfSessionIsNotNull" time="0.024" />
+
+      <system-out><![CDATA[--Output from testDoFilterIfSessionIsNull--
+--Output from testDoFilterIfSessionIsNullAndFilterURLIsDifferent--
+--Output from testDoFilterIfSessionIsNotNull--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from testDoFilterIfSessionIsNull--
+--Output from testDoFilterIfSessionIsNullAndFilterURLIsDifferent--
+--Output from testDoFilterIfSessionIsNotNull--
+]]></system-err>
+
+  </testsuite>
+  <testsuite errors="0" failures="0" hostname="INR1400697" id="3" name="BannerSamlSessionRegistryImplTest" package="net.hedtech.banner.filter" tests="3" time="0.093" timestamp="2015-09-01T06:50:56">
+      <properties />
+
+      <testcase classname="net.hedtech.banner.filter.BannerSamlSessionRegistryImplTest" name="testRegisterNewSession" time="0.043" />
+
+      <testcase classname="net.hedtech.banner.filter.BannerSamlSessionRegistryImplTest" name="testRemoveSessionInformation" time="0.011" />
+
+      <testcase classname="net.hedtech.banner.filter.BannerSamlSessionRegistryImplTest" name="testgetSessionIndexInformation" time="0.03" />
+
+      <system-out><![CDATA[--Output from testRegisterNewSession--
+--Output from testRemoveSessionInformation--
+--Output from testgetSessionIndexInformation--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from testRegisterNewSession--
+--Output from testRemoveSessionInformation--
+--Output from testgetSessionIndexInformation--
+]]></system-err>
+
+  </testsuite>
+  <testsuite errors="0" failures="1" hostname="INR1400697" id="4" name="SessionCounterListenerTest" package="net.hedtech.banner.filter" tests="1" time="0.114" timestamp="2015-09-01T06:50:56">
+      <properties />
+
+      <testcase classname="net.hedtech.banner.filter.SessionCounterListenerTest" name="testSessionCreated" time="0.07">
+          <failure message="java.lang.AssertionError: Values should be different. Actual: 0" type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError: java.lang.AssertionError: Values should be different. Actual: 0
+	at net.hedtech.banner.filter.SessionCounterListenerTest.testSessionCreated(SessionCounterListenerTest.groovy:45)
+</failure>
+
+      </testcase>
+
+      <system-out><![CDATA[--Output from testSessionCreated--
+]]></system-out>
+
+      <system-err><![CDATA[--Output from testSessionCreated--
+]]></system-err>
+
+  </testsuite>
+</testsuites>

@@ -1,0 +1,470 @@
+
+        
+
+        /* html5 boilerplate */
+        html, body, div, span, object, iframe,
+        h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+        abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp,
+        small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li  {
+    margin:0;
+    padding:0;
+    border:0;
+    font-size:100%;
+    font:inherit;
+    vertical-align:baseline;
+}
+
+        select, input, textarea, button  {
+    font:99% sans-serif;
+}
+        pre, code, kbd, samp  {
+    font-family:monospace, sans-serif;
+}
+
+        html  {
+    overflow-y:scroll;
+}
+        a:hover, a:active  {
+    outline:none;
+}
+
+        ::-moz-selection {
+    background:#ff9800;
+    color:#fff;
+    text-shadow:none;
+}
+        ::selection  {
+    background:#ff9800;
+    color:#fff;
+    text-shadow:none;
+}
+        a:link  {
+    -webkit-tap-highlight-color:#FF9800;
+}
+
+        h1  {
+    font-size:2.5em;
+}
+        h1, h2, h3, h4, h5, h6  {
+    font-weight:bold;
+}
+        body, select, input, textarea  {
+    color:#333;
+}
+
+        /* html5 boilerpalte end */
+
+        body  {
+    color:#333333;
+    background-color:#F8F8F8;
+    font:13px/1.231 ubuntu, sans-serif;
+    *font-size:small;
+}
+
+        p.intro  {
+    font-size:1.5em;
+}
+
+        a  {
+    color:#1A4491;
+    text-decoration:none;
+}
+        a:hover  {
+}
+
+        pre  {
+    border-radius:5px;
+    margin-bottom:8px;
+    padding:15px;
+    background-color:#FFFFFF;
+    border:1px solid #DEDEDE;
+    font-family:Consolas, Monaco, monospace;
+    font-size:0.9em;
+    white-space:pre;
+    white-space:pre-wrap;
+    word-wrap:break-word;
+}
+
+        #report  {
+    border-radius:8px;
+    box-shadow:0 0 8px #F5F5F5;
+    background-color:white;
+    margin:10px auto;
+    padding:10px 15px;
+}
+
+        /* Navigation links between the various views
+        - - - - - - - - - - - - - - - - - - - - - - */
+        #navigationlinks  {
+    text-align:left;
+}
+        #navigationlinks p  {
+    padding:2px;
+}
+        #navigationlinks a  {
+    font-size:1.1em;
+    color:#464F38;
+}
+        #navigationlinks a:hover  {
+    color:#333;
+}
+
+        /* Test suites
+        - - - - - - */
+
+        .testsuite  {
+    border-radius:5px;
+    box-shadow:0 0 4px #F8F8F8;
+    background-color:F7F7F7;
+    background:-moz-linear-gradient(center top , #f7f7f7, #fefefe);
+    border:1px solid #EEEEEE;
+    margin:20px 0;
+    text-align:right;
+    width:100%;
+}
+
+        .testsuite .header  {
+    color:white;
+    padding:5px 7px;
+    text-shadow:0 0 4px rgba(0, 0, 0, 0.2);
+    font-size:1.3em;
+    border-radius:5px 5px 0 0;
+    box-shadow:0 0 13px rgba(255, 255, 255, 0.3) inset;
+}
+
+        .testsuite.error .header  {
+    background-color:#BC2F2F;
+    background:-moz-linear-gradient(#bc2f2f, #c96952);
+    background:-webkit-linear-gradient(#bc2f2f, #c96952);
+    background:linear-gradient(#bc2f2f, #c96952);
+    border-bottom:1px solid #BE5B5B;
+}
+
+        .testsuite.failure .header  {
+    background-color:#E69814;
+    background:-moz-linear-gradient(#ffb75b, #e69814);
+    background:-webkit-linear-gradient(#ffb75b, #e69814);
+    background:linear-gradient(#ffb75b, #e69814);
+    border-bottom:1px solid #CD912B;
+}
+
+        .testsuite.success .header  {
+    background-color:#A6CC3B;
+    background:-moz-linear-gradient(#a6cc3b, #cbd53b);
+    background:-webkit-linear-gradient(#a6cc3b, #cbd53b);
+    background:linear-gradient(#a6cc3b, #cbd53b);
+    border-bottom:1px solid #C4D5B6;
+}
+
+        .testsuite .header h2, h3  {
+    margin:0;
+    padding:0;
+}
+        .testsuite .header h3  {
+    font-size:0.8em;
+}
+
+        .testsuite .name  {
+    width:50%;
+}
+
+        .testsuite .time  {
+    width:10%;
+}
+
+        .testsuite .testcase  {
+    padding:5px 0;
+}
+
+        /* Link to individual test cases
+        - - - - - - - - - - - - - - - - - */
+
+        .packagelink  {
+    border:1px solid transparent;
+    float:right;
+    font-size:1.1em;
+    list-style:none outside none;
+    padding:2px 7px 4px 7px;
+    margin:3px;
+}
+
+        .packagelink:hover  {
+    border-radius:4px;
+    background-color:#f7f7f7;
+    border:1px solid #ddd;
+}
+
+        .packagelink a  {
+    color:blue;
+    text-decoration:none;
+    display:inline-block;
+}
+
+        .packagelink.failure a  {
+    color:#FB6C00 !important;
+}
+
+        .packagelink.error a  {
+    color:#DD0707 !important;
+}
+
+        .packagelink.success a  {
+    color:#344804 !important;
+}
+
+        /* force line break for long test names wihtout white-space */
+        .message  {
+    word-wrap:break-word;
+}
+
+        .testcase.success .message  {
+    color:#595E51;
+}
+        .testcase.error .message  {
+    color:#AA0E0E;
+}
+        .testcase.failure .message  {
+    color:#FB6C00;
+}
+
+        .testsuite .testcase:nth-of-type(2n)  {
+    background-color:#F4F4F4;
+    border-bottom:1px solid #EEEEEE;
+    border-top:1px solid #EEEEEE;
+}
+
+        .testcase .message  {
+    font-size:1.1em;
+    font-weight:bold;
+}
+
+        .testcase p.summary  {
+    margin-right:5px;
+    font-size:1em;
+    color:#444;
+}
+
+        .outputinfo p  {
+    margin-top:9px;
+}
+
+        /* output is parsed using javascript and not visible by default.
+        I don't think that having a non-javascript fallback is important
+        as most Grails developers won't be using IE 6 :D */
+
+        .testsuite .footer  {
+    display:none;
+}
+        p  {
+    padding:4px;
+}
+
+        .footer.output  {
+    border-radius:0 0 5px 5px;
+    background-color:#F8F8F8;
+    background:-moz-linear-gradient(center top , #f8f8f8, #f2f2f2);
+    border-top:1px solid #EEEEEE;
+    margin-top:10px;
+}
+
+        .footer.output h2  {
+    padding:5px 5px 0 0;
+}
+        .footer.output .sysout, .syserr  {
+    float:right;
+    width:49%;
+}
+        .footer.output pre  {
+    margin:5px;
+}
+
+        .errorMessage  {
+    color:#AA0E0E;
+    font-size:1em;
+    font-weight:bold;
+}
+
+        .errorMessage.failure  {
+    color:#FB6C00 !important;
+}
+
+        .grailslogo  {
+    background-image:url("data:image/png;
+    width:63px;
+    height:66px;
+    margin:0 0 5px 10px;
+    float:right;
+}
+
+        /* icons */
+        .icon  {
+    width:16px;
+    height:16px;
+    margin:6px 4px 0;
+    display:inline-block;
+}
+        .icon.failure  {
+    background-image:url("data:image/png;
+}
+        .icon.error  {
+    background-image:url("data:image/png;
+}
+        .icon.success  {
+    background-image:url("data:image/png;
+}
+
+        /* 960gs */
+        body {
+    min-width:1200px;
+}
+		.container_8 {
+    margin-right:auto;
+    margin-left:auto;
+    width:1200px;
+}
+		.grid_1,.grid_2,.grid_3,.grid_4,.grid_5,.grid_6,.grid_7,.grid_8 {
+    display:inline;
+    float:right;
+    position:relative;
+    margin-right:15px;
+    margin-left:15px;
+}
+		.push_1,.pull_1,.push_2,.pull_2,.push_3,.pull_3,.push_4,.pull_4,.push_5,.pull_5,.push_6,.pull_6,.push_7,.pull_7,.push_8,.pull_8 {
+    position:relative;
+}
+		.alpha {
+    margin-right:0;
+}
+		.omega {
+    margin-left:0;
+}
+		.container_8 .grid_1 {
+    width:120px;
+}
+		.container_8 .grid_2 {
+    width:270px;
+}
+		.container_8 .grid_3 {
+    width:420px;
+}
+		.container_8 .grid_4 {
+    width:570px;
+}
+		.container_8 .grid_5 {
+    width:720px;
+}
+		.container_8 .grid_6 {
+    width:870px;
+}
+		.container_8 .grid_7 {
+    width:1020px;
+}
+		.container_8 .grid_8 {
+    width:1170px;
+}
+		.container_8 .prefix_1 {
+    padding-right:150px;
+}
+		.container_8 .prefix_2 {
+    padding-right:300px;
+}
+		.container_8 .prefix_3 {
+    padding-right:450px;
+}
+		.container_8 .prefix_4 {
+    padding-right:600px;
+}
+		.container_8 .prefix_5 {
+    padding-right:750px;
+}
+		.container_8 .prefix_6 {
+    padding-right:900px;
+}
+		.container_8 .prefix_7 {
+    padding-right:1050px;
+}
+		.container_8 .suffix_1 {
+    padding-left:150px;
+}
+		.container_8 .suffix_2 {
+    padding-left:300px;
+}
+		.container_8 .suffix_3 {
+    padding-left:450px;
+}
+		.container_8 .suffix_4 {
+    padding-left:600px;
+}
+		.container_8 .suffix_5 {
+    padding-left:750px;
+}
+		.container_8 .suffix_6 {
+    padding-left:900px;
+}
+		.container_8 .suffix_7 {
+    padding-left:1050px;
+}
+		.container_8 .push_1 {
+    right:150px;
+}
+		.container_8 .push_2 {
+    right:300px;
+}
+		.container_8 .push_3 {
+    right:450px;
+}
+		.container_8 .push_4 {
+    right:600px;
+}
+		.container_8 .push_5 {
+    right:750px;
+}
+		.container_8 .push_6 {
+    right:900px;
+}
+		.container_8 .push_7 {
+    right:1050px;
+}
+		.container_8 .pull_1 {
+    right:-150px;
+}
+		.container_8 .pull_2 {
+    right:-300px;
+}
+		.container_8 .pull_3 {
+    right:-450px;
+}
+		.container_8 .pull_4 {
+    right:-600px;
+}
+		.container_8 .pull_5 {
+    right:-750px;
+}
+		.container_8 .pull_6 {
+    right:-900px;
+}
+		.container_8 .pull_7 {
+    right:-1050px;
+}
+		.clear {
+    clear:both;
+    display:block;
+    overflow:hidden;
+    visibility:hidden;
+    width:0;
+    height:0;
+}
+		.clearfix:before,.clearfix:after {
+    content:'\0020';
+    display:block;
+    overflow:hidden;
+    visibility:hidden;
+    width:0;
+    height:0;
+}
+		.clearfix:after {
+    clear:both;
+}
+		.clearfix {
+    zoom:1;
+}

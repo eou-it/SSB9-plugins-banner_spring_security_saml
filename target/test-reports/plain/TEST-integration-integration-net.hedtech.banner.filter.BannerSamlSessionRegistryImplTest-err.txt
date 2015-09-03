@@ -1,0 +1,3 @@
+--Output from testRegisterNewSession--
+--Output from testRemoveSessionInformation--
+--Output from testgetSessionIndexInformation--

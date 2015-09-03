@@ -1,0 +1,15 @@
+Testsuite: net.hedtech.banner.filter.SessionCounterListenerTest
+Tests run: 1, Failures: 1, Errors: 0, Time elapsed: 0.114 sec
+------------- Standard Output ---------------
+--Output from testSessionCreated--
+------------- ---------------- ---------------
+------------- Standard Error -----------------
+--Output from testSessionCreated--
+------------- ---------------- ---------------
+
+Testcase: testSessionCreated took 0.07 sec
+	FAILED
+java.lang.AssertionError: Values should be different. Actual: 0
+junit.framework.AssertionFailedError: java.lang.AssertionError: Values should be different. Actual: 0
+	at net.hedtech.banner.filter.SessionCounterListenerTest.testSessionCreated(SessionCounterListenerTest.groovy:45)
+

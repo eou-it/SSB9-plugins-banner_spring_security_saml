@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite errors="0" failures="1" hostname="INR1400697" name="net.hedtech.banner.filter.SessionCounterListenerTest" tests="1" time="0.114" timestamp="2015-09-01T06:50:56">
+  <properties />
+  <testcase classname="net.hedtech.banner.filter.SessionCounterListenerTest" name="testSessionCreated" time="0.07">
+    <failure message="java.lang.AssertionError: Values should be different. Actual: 0" type="junit.framework.AssertionFailedError">junit.framework.AssertionFailedError: java.lang.AssertionError: Values should be different. Actual: 0
+	at net.hedtech.banner.filter.SessionCounterListenerTest.testSessionCreated(SessionCounterListenerTest.groovy:45)
+</failure>
+  </testcase>
+  <system-out><![CDATA[--Output from testSessionCreated--
+]]></system-out>
+  <system-err><![CDATA[--Output from testSessionCreated--
+]]></system-err>
+</testsuite>

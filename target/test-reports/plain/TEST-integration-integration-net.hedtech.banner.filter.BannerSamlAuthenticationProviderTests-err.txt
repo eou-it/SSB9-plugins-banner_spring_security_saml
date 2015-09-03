@@ -1,0 +1,5 @@
+--Output from testAuthenticateFailure--
+--Output from testAdminDoFilter--
+--Output from testAuthenticateNoBannerUser--
+--Output from testAuthenticateSSBUser--
+--Output from testAuthenticateOracleDisabledUser--
