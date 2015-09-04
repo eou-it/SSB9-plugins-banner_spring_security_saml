@@ -28,6 +28,7 @@ import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+
 /**
  * An Filter added to handle the SAMl logout with token of type BannerAuthenticationToken.
  */
@@ -83,8 +84,11 @@ class BannerSamlLogoutFilter extends LogoutFilter {
                     for (LogoutHandler handler : globalHandlers) {
                         handler.logout(request,response,auth)
                     }
-                    SAMLMessageContext context = contextProvider.getLocalEntity(request,response,(SAMLCredential)auth.getSAMLCredential())
-                    profile.sendLogoutRequest(context,auth.getSAMLCredential())
+                    SAMLCredential samlCredential = (SAMLCredential)auth.getSAMLCredential();
+                    request.setAttribute("localEntityId", samlCredential.getLocalEntityID());
+                    request.setAttribute("peerEntityId", samlCredential.getRemoteEntityID());
+                    SAMLMessageContext context = this.contextProvider.getLocalAndPeerEntity(request, response);
+                    profile.sendLogoutRequest(context,samlCredential)
                     log.debug("Logout Request initiated with ontext : " + context)
                 }
                 else {

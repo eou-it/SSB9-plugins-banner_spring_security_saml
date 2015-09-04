@@ -5,6 +5,10 @@ import net.hedtech.banner.security.BannerSamlSavedRequestAwareAuthenticationSucc
 import net.hedtech.banner.security.BannerSamlSessionFilter
 import net.hedtech.banner.security.BannerSamlSessionRegistryImpl
 import grails.plugin.springsecurity.SpringSecurityUtils
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+import org.springframework.security.web.util.matcher.RequestMatcher
+
+import javax.servlet.Filter
 
 class BannerSpringSecuritySamlGrailsPlugin {
     // the plugin version
@@ -12,12 +16,8 @@ class BannerSpringSecuritySamlGrailsPlugin {
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.5 > *"
 
-    def loadAfter = ['springSecuritySaml']
-
-    def loadBefore = ['bannerCore']
-
     def dependsOn = [
-            springSecuritySaml: '2.10.2.2 => *'
+            bannerCore: '2.10.4 => *'
     ]
 
     // resources that are excluded from plugin packaging
@@ -97,7 +97,30 @@ Brief summary/description of the plugin.
         } else {
             providerNames = ['samlAuthenticationProvider']
         }
-        applicationContext.authenticationManager.providers = createBeanList(providerNames, applicationContext)    }
+        applicationContext.authenticationManager.providers = createBeanList(providerNames, applicationContext)
+
+        // Define the spring security filters
+        def authenticationProvider = Holders?.config?.banner.sso.authenticationProvider
+        LinkedHashMap<String, String> filterChain = new LinkedHashMap();
+        switch (authenticationProvider) {
+            case 'saml':
+                filterChain['/**/api/**'] = 'statelessSecurityContextPersistenceFilter,bannerMepCodeFilter,authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor'
+                filterChain['/**/qapi/**'] = 'statelessSecurityContextPersistenceFilter,bannerMepCodeFilter,authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor'
+                filterChain['/**'] = 'samlSessionFilter,securityContextPersistenceFilter,bannerMepCodeFilter,samlEntryPoint,metadataFilter,samlProcessingFilter,samlLogoutFilter,samlLogoutProcessingFilter,logoutFilter,authenticationProcessingFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor'
+                break
+            default:
+               break
+        }
+
+        LinkedHashMap<RequestMatcher, List<Filter>> filterChainMap = new LinkedHashMap()
+        filterChain.each { key, value ->
+            def filters = value.toString().split(',').collect {
+                name -> applicationContext.getBean(name)
+            }
+            filterChainMap[new AntPathRequestMatcher(key)] = filters
+        }
+        applicationContext.springSecurityFilterChain.filterChainMap = filterChainMap
+    }
 
     def onChange = { event ->
         // TODO Implement code that is executed when any artefact that this plugin is
