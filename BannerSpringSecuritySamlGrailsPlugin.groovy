@@ -12,12 +12,12 @@ class BannerSpringSecuritySamlGrailsPlugin {
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.5 > *"
 
-    def loadAfter = ['springSecuritySaml','bannerCore']
+    def loadAfter = ['springSecuritySaml']
+
+    def loadBefore = ['bannerCore']
 
     def dependsOn = [
-            springSecuritySaml: '2.10.2.2 => *',
-            bannerCore: '2.10.4 => *'
-
+            springSecuritySaml: '2.10.2.2 => *'
     ]
 
     // resources that are excluded from plugin packaging
