@@ -39,7 +39,7 @@ class SessionCounterListenerTest {
 
     @Test
     public void dummytest(){
-        
+
     }
 
     @Ignore
