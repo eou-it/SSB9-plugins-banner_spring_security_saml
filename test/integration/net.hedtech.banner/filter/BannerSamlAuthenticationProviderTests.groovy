@@ -4,10 +4,10 @@ Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
 
 package net.hedtech.banner.filter
 
+import grails.util.Holders
 import net.hedtech.banner.security.BannerAuthenticationToken
 import net.hedtech.banner.security.BannerSamlAuthenticationProvider
 import net.hedtech.banner.testing.BaseIntegrationTestCase
-import grails.util.Holders
 import org.joda.time.DateTime
 import org.junit.After
 import org.junit.Before
@@ -31,6 +31,8 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.saml.SAMLAuthenticationToken
 import org.springframework.security.saml.SAMLConstants
 import org.springframework.security.saml.context.SAMLMessageContext
+import org.springframework.security.saml.metadata.ExtendedMetadata
+import org.springframework.security.saml.metadata.MetadataManager
 import org.springframework.security.saml.storage.SAMLMessageStorage
 import org.springframework.security.saml.websso.WebSSOProfileConsumer
 import org.springframework.security.saml.websso.WebSSOProfileConsumerImpl
@@ -50,6 +52,9 @@ class BannerSamlAuthenticationProviderTests extends BaseIntegrationTestCase {
     ApplicationContext context
     SAMLMessageContext messageContext
     XMLObjectBuilderFactory builderFactory
+    ExtendedMetadata peerExtendedMetadata;
+    MetadataManager metadata;
+
 
 
 
@@ -195,6 +200,7 @@ class BannerSamlAuthenticationProviderTests extends BaseIntegrationTestCase {
         SAMLObjectBuilder<Response> builder = (SAMLObjectBuilder<Response>) builderFactory.getBuilder(Response.DEFAULT_ELEMENT_NAME);
         Response response = builder.buildObject();
         response.setIssueInstant(new DateTime());
+        response.setInResponseTo(generateId());
 
         StatusCode statusCode = ((SAMLObjectBuilder<StatusCode>) builderFactory.getBuilder(StatusCode.DEFAULT_ELEMENT_NAME)).buildObject();
         statusCode.setValue(StatusCode.SUCCESS_URI);
@@ -221,6 +227,12 @@ class BannerSamlAuthenticationProviderTests extends BaseIntegrationTestCase {
         messageContext.localEntityEndpoint = samlEndpoint
 
         messageContext.localEntityId = "TestUri"  // should match Audience.uri
+
+        ExtendedMetadata extendedMetadata = metadata.getExtendedMetadata(messageContext.getPeerEntityMetadata().getEntityID());
+        messageContext.setPeerExtendedMetadata(extendedMetadata);
+
+
+        messageContext.peerExtendedMetadata.supportUnsolicitedResponse=true;
         SAMLAuthenticationToken token = new SAMLAuthenticationToken(messageContext)
 
         replayMock();

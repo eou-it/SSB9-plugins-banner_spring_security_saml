@@ -62,6 +62,13 @@ class BannerSamlSessionRegistryImplTest {
         assertEquals(sessionRegistry.getSessionIndexInformation(randomId),session.getId());
     }
 
+    @Test
+    public void "testgetSessionObjectInformation"(){
+        sessionRegistry.registerNewSession(session,randomId);
+        assertEquals(sessionRegistry.getSessionObjectInformation(session.getId()), session);
+
+    }
+
 
 
 
