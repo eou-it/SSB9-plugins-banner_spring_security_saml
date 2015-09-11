@@ -3,6 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.security
 
+import grails.util.Holders
 import org.apache.log4j.Logger
 import org.opensaml.common.SAMLException
 import org.opensaml.common.SAMLRuntimeException
@@ -17,7 +18,7 @@ import org.springframework.security.saml.SAMLAuthenticationToken
 import org.springframework.security.saml.SAMLConstants
 import org.springframework.security.saml.SAMLCredential
 import org.springframework.security.saml.context.SAMLMessageContext
-import grails.util.Holders
+
 /**
  * An authentication provider for Banner that authenticates a user using SAML.
  */

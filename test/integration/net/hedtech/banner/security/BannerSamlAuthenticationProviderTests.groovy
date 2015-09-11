@@ -2,7 +2,7 @@
 Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
 *******************************************************************************/
 
-package net.hedtech.banner.filter
+package net.hedtech.banner.security
 
 import grails.util.Holders
 import net.hedtech.banner.security.BannerAuthenticationToken

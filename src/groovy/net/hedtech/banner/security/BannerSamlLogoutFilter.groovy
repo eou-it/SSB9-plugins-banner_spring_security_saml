@@ -3,6 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.security
 
+import net.hedtech.banner.security.BannerAuthenticationToken
 import org.apache.log4j.Logger
 import org.opensaml.common.SAMLException
 import org.opensaml.saml2.metadata.provider.MetadataProviderException
