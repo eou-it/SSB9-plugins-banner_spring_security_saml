@@ -58,6 +58,8 @@ Brief summary/description of the plugin.
             return
         }
 
+        println '\nConfiguring Banner Spring Security SAML ...'
+
         samlAuthenticationProvider(BannerSamlAuthenticationProvider) {
             userDetails = ref('userDetailsService')
             hokConsumer = ref('webSSOprofileConsumer')
@@ -78,6 +80,7 @@ Brief summary/description of the plugin.
             defaultTargetUrl = conf.saml.afterLoginUrl
             sessionRegistry = ref("samlSessionRegistry")
         }
+        println '...finished configuring Banner Spring Security SAML\n'
     }
 
     def doWithDynamicMethods = { ctx ->
