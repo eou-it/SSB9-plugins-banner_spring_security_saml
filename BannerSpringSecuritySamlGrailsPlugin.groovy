@@ -17,7 +17,8 @@ class BannerSpringSecuritySamlGrailsPlugin {
     def grailsVersion = "2.5 > *"
 
     def dependsOn = [
-            bannerCore: '2.10.4 => *'
+            bannerCore: '2.10.4 => *',
+            springSecuritySaml: '2.0.0 => *'
     ]
 
     // resources that are excluded from plugin packaging
