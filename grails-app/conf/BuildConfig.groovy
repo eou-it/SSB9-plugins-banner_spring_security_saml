@@ -30,6 +30,6 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile ":spring-security-saml:2.0.0"
+        compile ":spring-security-saml:2.0.1"
     }
 }
