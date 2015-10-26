@@ -19,14 +19,20 @@ grails.project.dependency.resolution = {
         grailsCentral()
         mavenLocal()
         mavenCentral()
+        mavenRepo "http://repo.spring.io/milestone/"
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
         // runtime 'mysql:mysql-connector-java:5.1.27'
 
+        compile('org.springframework.security:spring-security-crypto:4.0.1.RELEASE')
+
+        compile('org.springframework.security:spring-security-web:3.2.8.RELEASE')
+
         compile ("org.springframework.security.extensions:spring-security-saml2-core:1.0.1.RELEASE") {
             export = false
         }
+
     }
 
     plugins {
