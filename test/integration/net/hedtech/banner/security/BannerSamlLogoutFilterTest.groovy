@@ -5,6 +5,7 @@
 package net.hedtech.banner.security
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.codehaus.groovy.runtime.typehandling.GroovyCastException
 import org.joda.time.DateTime
 import org.junit.After
 import org.junit.Before
@@ -19,6 +20,8 @@ import org.opensaml.saml2.metadata.Endpoint
 import org.opensaml.saml2.metadata.EntityDescriptor
 import org.opensaml.saml2.metadata.SPSSODescriptor
 import org.opensaml.saml2.metadata.impl.SingleSignOnServiceImpl
+import org.opensaml.saml2.metadata.provider.MetadataProviderException
+import org.opensaml.ws.message.encoder.MessageEncodingException
 import org.opensaml.xml.XMLObjectBuilderFactory
 import org.opensaml.xml.schema.XSString
 import org.opensaml.xml.schema.impl.XSStringBuilder
@@ -26,6 +29,8 @@ import org.springframework.context.ApplicationContext
 import org.springframework.mock.web.MockFilterChain
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
+import org.springframework.security.authentication.AuthenticationServiceException
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.saml.SAMLAuthenticationToken
@@ -34,7 +39,11 @@ import org.springframework.security.saml.context.SAMLContextProvider
 import org.springframework.security.saml.context.SAMLMessageContext
 import org.springframework.security.saml.metadata.ExtendedMetadata
 import org.springframework.security.saml.metadata.MetadataManager
+import org.springframework.security.saml.processor.SAMLProcessor
+import org.springframework.security.saml.processor.SAMLProcessorImpl
 import org.springframework.security.saml.storage.SAMLMessageStorage
+import org.springframework.security.saml.websso.SingleLogoutProfile
+import org.springframework.security.saml.websso.SingleLogoutProfileImpl
 import org.springframework.security.saml.websso.WebSSOProfileConsumer
 import org.springframework.security.saml.websso.WebSSOProfileConsumerImpl
 import org.springframework.security.web.authentication.logout.LogoutHandler
@@ -64,6 +73,8 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
     MetadataManager metadata;
     BannerSamlLogoutFilter filter;
     def SAMLContextProvider contextProvider;
+    def SingleLogoutProfile profile
+    SAMLProcessor samlProcessor
 
     MockHttpServletRequest request;
     MockHttpServletResponse response;
@@ -82,7 +93,11 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
         chain= new MockFilterChain();
         handlers =  new SecurityContextLogoutHandler() ;
         filter = new BannerSamlLogoutFilter("/logout", handlers, handlers);
-        filter.setContextProvider(contextProvider);
+        profile= new SingleLogoutProfileImpl();
+        samlProcessor= createMock(SAMLProcessorImpl.class);
+        profile.setProcessor(samlProcessor);
+        filter.setProfile(profile)
+
     }
     @After
     public void tearDown() {
@@ -123,6 +138,7 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
         // Create a new session and add the security context.
         HttpSession session = request.getSession(true);
         session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+        filter.setContextProvider(contextProvider);
         filter.processLogout(request, response,chain)
         assertEquals(response.getStatus(),302);
 
@@ -132,7 +148,7 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
     public void "Validate Global logout fails if local = true in request"() {
 
         BannerAuthenticationToken authentication
-        SAMLAuthenticationToken token = initialize("9BE22914996B2516E040007F01006516")
+        SAMLAuthenticationToken token = initialize("9BE22914996B2516E040007F01006516",false);
         authentication = (BannerAuthenticationToken)bannerSamlAuthenticationProvider.authenticate(token)
         assertNotNull(authentication)
         SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -144,6 +160,7 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
         // Create a new session and add the security context.
         HttpSession session = request.getSession(true);
         session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+        filter.setContextProvider(contextProvider);
         filter.processLogout(request, response,chain)
         assertEquals(response.getStatus(),302);
 
@@ -156,9 +173,8 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
 
     @Test
     public void " Validate Global logout pass if local = false in request"() {
-        expectedEx.expect(NullPointerException.class);
         BannerAuthenticationToken authentication
-        SAMLAuthenticationToken token = initialize("9BE22914996B2516E040007F01006516")
+        SAMLAuthenticationToken token = initialize("9BE22914996B2516E040007F01006516",false);
         authentication = (BannerAuthenticationToken)bannerSamlAuthenticationProvider.authenticate(token)
         assertNotNull(authentication)
         SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -170,16 +186,16 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
         // Create a new session and add the security context.
         HttpSession session = request.getSession(true);
         session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+        filter.setContextProvider(contextProvider);
         filter.processLogout(request, response,chain)
-
+        assertEquals(response.getStatus(),200);
 
     }
 
     @Test
     public void " Validate Global logout fails if no parameter in request called local"() {
-        expectedEx.expect(NullPointerException.class);
         BannerAuthenticationToken authentication
-        SAMLAuthenticationToken token = initialize("9BE22914996B2516E040007F01006516")
+        SAMLAuthenticationToken token = initialize("9BE22914996B2516E040007F01006516",false);
         authentication = (BannerAuthenticationToken)bannerSamlAuthenticationProvider.authenticate(token)
         assertNotNull(authentication)
         SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -191,16 +207,16 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
         // Create a new session and add the security context.
         HttpSession session = request.getSession(true);
         session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+        filter.setContextProvider(contextProvider);
         filter.processLogout(request, response,chain)
-
-
+        assertEquals(response.getStatus(),200);
     }
 
     @Test
     public void " verify local logout clears the http session"() {
 
         BannerAuthenticationToken authentication
-        SAMLAuthenticationToken token = initialize("9BE22914996B2516E040007F01006516")
+        SAMLAuthenticationToken token = initialize("9BE22914996B2516E040007F01006516",false);
         authentication = (BannerAuthenticationToken)bannerSamlAuthenticationProvider.authenticate(token)
         assertNotNull(authentication)
         SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -213,6 +229,7 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
         HttpSession session = request.getSession(true);
         assertEquals(request.getSession(true).getId(),session.getId());
         session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+        filter.setContextProvider(contextProvider);
         filter.processLogout(request, response,chain)
         assertNotEquals(request.getSession(true).getId(),session.getId());
     }
@@ -220,7 +237,7 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
     @Test
     public void " verify if auth getSAMLCredential is empty"() {
         BannerAuthenticationToken authentication
-        SAMLAuthenticationToken token = initialize("9BE22914996B2516E040007F01006516")
+        SAMLAuthenticationToken token = initialize("9BE22914996B2516E040007F01006516",false);
         authentication = (BannerAuthenticationToken)bannerSamlAuthenticationProvider.authenticate(token)
         authentication.SAMLCredential=null;
         assertNotNull(authentication)
@@ -233,11 +250,57 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
         // Create a new session and add the security context.
         HttpSession session = request.getSession(true);
         session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+        filter.setContextProvider(contextProvider);
         filter.processLogout(request, response,chain)
         assertEquals(response.getStatus(),302);
-
-
     }
+
+    /**
+     * Verifies that user details are filled correctly if set and that entitlements of the user returned from
+     * the userDetails are set to the authentication object.
+     *
+     * @throws Exception error
+     */
+    @Test
+    public void " Validate ProcessLogout  with auth object not of type BannerAuthenticationToken "() throws  Exception {
+        expectedEx.expect(GroovyCastException.class);
+        SAMLAuthenticationToken token = initialize("9BE22914996B2516E040007F01006516",false);
+        Authentication authentication = new SAMLAuthenticationToken(token.getCredentials());
+        authentication.credentials=token.getCredentials();
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(authentication);
+
+        request.setParameter("local","false")
+        request.setRequestURI("/saml/logout");
+
+        // Create a new session and add the security context.
+        HttpSession session = request.getSession(true);
+        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+        filter.setContextProvider(contextProvider);
+        filter.processLogout(request, response,chain)
+    }
+
+    @Test
+    public void " Message Encoding Exception"() {
+        expectedEx.expect(AuthenticationServiceException.class);
+        BannerAuthenticationToken authentication
+        SAMLAuthenticationToken token = initialize("9BE22914996B2516E040007F01006516",true);
+        authentication = (BannerAuthenticationToken)bannerSamlAuthenticationProvider.authenticate(token)
+        assertNotNull(authentication)
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(authentication);
+
+        request.setParameter("local","false")
+        request.setRequestURI("/saml/logout");
+
+        // Create a new session and add the security context.
+        HttpSession session = request.getSession(true);
+        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+        filter.setContextProvider(contextProvider);
+        filter.processLogout(request, response,chain)
+    }
+
+
 
     private void replayMock() {
 
@@ -246,7 +309,7 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
         replay(assertion);
     }
 
-    public SAMLAuthenticationToken initialize(String UdcID) {
+    public SAMLAuthenticationToken initialize(String UdcID,boolean issuerFlag) {
         bannerSamlAuthenticationProvider = new BannerSamlAuthenticationProvider()
         bannerSamlAuthenticationProvider.dataSource = dataSource
         bannerSamlAuthenticationProvider.setForcePrincipalAsString(false)
@@ -270,7 +333,7 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
         status.setStatusCode(statusCode);
         response.setStatus(status);
 
-        Assertion assertion=buildAssertion(UdcID)
+        Assertion assertion=buildAssertion(UdcID,issuerFlag)
         response.getAssertions().add(assertion);
         messageContext = new SAMLMessageContext();
         messageContext.setInboundSAMLMessage(response)
@@ -302,7 +365,7 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
         return token
 
     }
-    public final Assertion buildAssertion(String UdcID) throws IllegalStateException {
+    public final Assertion buildAssertion(String UdcID,boolean issuerFlag) throws IllegalStateException {
         AuthnContextClassRef authnContextClassRef = ((SAMLObjectBuilder<AuthnContextClassRef>) builderFactory
                 .getBuilder(AuthnContextClassRef.DEFAULT_ELEMENT_NAME))
                 .buildObject();
@@ -336,7 +399,11 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
 
         Issuer issuer = ((SAMLObjectBuilder<Issuer>) builderFactory
                 .getBuilder(Issuer.DEFAULT_ELEMENT_NAME)).buildObject();
-        issuer.setValue("localhost:default:entityId");
+        if(issuerFlag){
+            issuer.setValue("abc");
+        }else{
+            issuer.setValue("localhost:default:entityId");
+        }
 
         Assertion assertion = ((SAMLObjectBuilder<Assertion>) builderFactory
                 .getBuilder(Assertion.DEFAULT_ELEMENT_NAME)).buildObject();
