@@ -167,6 +167,35 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
 
     }
 
+    @Test
+    public void "validation isGlobalLogout "(){
+        BannerAuthenticationToken authentication
+        SAMLAuthenticationToken token = initialize("9BE22914996B2516E040007F01006516",false);
+        authentication = (BannerAuthenticationToken)bannerSamlAuthenticationProvider.authenticate(token)
+        request.setParameter("local","false");
+        assertTrue(filter.isGlobalLogout(request,authentication))
+
+    }
+
+    @Test
+    public void "validation isLocalLogout "(){
+        BannerAuthenticationToken authentication
+        SAMLAuthenticationToken token = initialize("9BE22914996B2516E040007F01006516",false);
+        authentication = (BannerAuthenticationToken)bannerSamlAuthenticationProvider.authenticate(token)
+        request.setParameter("local","true");
+        assertFalse(filter.isGlobalLogout(request,authentication))
+
+    }
+
+    @Test
+    public void "validation isGlobalLogout with no local parameter "(){
+        BannerAuthenticationToken authentication
+        SAMLAuthenticationToken token = initialize("9BE22914996B2516E040007F01006516",false);
+        authentication = (BannerAuthenticationToken)bannerSamlAuthenticationProvider.authenticate(token)
+        assertTrue(filter.isGlobalLogout(request,authentication))
+
+    }
+
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
 
@@ -192,25 +221,6 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
 
     }
 
-    @Test
-    public void " Validate Global logout fails if no parameter in request called local"() {
-        BannerAuthenticationToken authentication
-        SAMLAuthenticationToken token = initialize("9BE22914996B2516E040007F01006516",false);
-        authentication = (BannerAuthenticationToken)bannerSamlAuthenticationProvider.authenticate(token)
-        assertNotNull(authentication)
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        securityContext.setAuthentication(authentication);
-
-        //request.setParameter("local","false")
-        request.setRequestURI("/saml/logout");
-
-        // Create a new session and add the security context.
-        HttpSession session = request.getSession(true);
-        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
-        filter.setContextProvider(contextProvider);
-        filter.processLogout(request, response,chain)
-        assertEquals(response.getStatus(),200);
-    }
 
     @Test
     public void " verify local logout clears the http session"() {
