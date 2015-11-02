@@ -1,4 +1,5 @@
 import grails.util.Holders
+import net.hedtech.banner.controllers.ControllerUtils
 import net.hedtech.banner.security.BannerSamlAuthenticationProvider
 import net.hedtech.banner.security.BannerSamlLogoutFilter
 import net.hedtech.banner.security.BannerSamlSavedRequestAwareAuthenticationSuccessHandler
@@ -99,7 +100,11 @@ Brief summary/description of the plugin.
         if (conf.providerNames) {
             providerNames.addAll conf.providerNames
         } else {
-            providerNames = ['samlAuthenticationProvider']
+            if(ControllerUtils.isGuestAuthenticationEnabled()){
+                providerNames = ['samlAuthenticationProvider','selfServiceBannerAuthenticationProvider']
+            } else{
+                providerNames = ['samlAuthenticationProvider']
+            }
         }
         applicationContext.authenticationManager.providers = createBeanList(providerNames, applicationContext)
 
