@@ -101,7 +101,7 @@ Brief summary/description of the plugin.
             providerNames.addAll conf.providerNames
         } else {
             if(ControllerUtils.isGuestAuthenticationEnabled()){
-                providerNames = ['samlAuthenticationProvider','selfServiceBannerAuthenticationProvider']
+                providerNames = ['samlAuthenticationProvider','selfServiceBannerAuthenticationProvider','bannerAuthenticationProvider']
             } else{
                 providerNames = ['samlAuthenticationProvider']
             }
