@@ -1,4 +1,5 @@
 import grails.util.Holders
+import net.hedtech.banner.controllers.ControllerUtils
 import net.hedtech.banner.security.BannerSamlAuthenticationProvider
 import net.hedtech.banner.security.BannerSamlLogoutFilter
 import net.hedtech.banner.security.BannerSamlSavedRequestAwareAuthenticationSuccessHandler
@@ -12,7 +13,7 @@ import javax.servlet.Filter
 
 class BannerSpringSecuritySamlGrailsPlugin {
     // the plugin version
-    def version = "9.14"
+    def version = "9.14.1"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.5 > *"
 
@@ -99,7 +100,11 @@ Brief summary/description of the plugin.
         if (conf.providerNames) {
             providerNames.addAll conf.providerNames
         } else {
-            providerNames = ['samlAuthenticationProvider']
+            if(ControllerUtils.isGuestAuthenticationEnabled()){
+                providerNames = ['samlAuthenticationProvider','selfServiceBannerAuthenticationProvider','bannerAuthenticationProvider']
+            } else{
+                providerNames = ['samlAuthenticationProvider']
+            }
         }
         applicationContext.authenticationManager.providers = createBeanList(providerNames, applicationContext)
 
