@@ -4,12 +4,21 @@
  *******************************************************************************/
 import net.hedtech.banner.configuration.ApplicationConfigurationUtils
 
-grails.config.locations = [] // leave this initialized to an empty list, and add your locations
-// in the APPLICATION CONFIGURATION section below.
-def locationAdder = ApplicationConfigurationUtils.&addLocation.curry(grails.config.locations)
+// ******************************************************************************
+//
+//                       +++ EXTERNALIZED CONFIGURATION +++
+//
+// ******************************************************************************
 
-[bannerGrailsAppConfig: "${userHome}/.grails/banner_configuration.groovy",
-].each { envName, defaultFileName -> locationAdder(envName, defaultFileName) }
+grails.config.locations = [] // leave this initialized to an empty list, and add your locations in the map below.
+def locationAdder = ApplicationConfigurationUtils.&addLocation.curry(grails.config.locations)
+println "App Name ${appName}"
+[ BANNER_APP_CONFIG:        "banner_configuration.groovy",
+  BANNER_SPRING_SECURITY_SAML_CONFIG: "banner_spring_security_saml_configuration.groovy",
+].each { envName, defaultFileName -> locationAdder( envName, defaultFileName ) }
+grails.config.locations.each {
+       println "configuration: " + it
+}
 
 log4j = {
     // Example of changing the log pattern for the default console
