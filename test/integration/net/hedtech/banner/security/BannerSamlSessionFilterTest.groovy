@@ -57,7 +57,7 @@ class BannerSamlSessionFilterTest {
     public ExpectedException expectedEx = ExpectedException.none();
 
 
-    @Ignore
+    @Test
     public void testDoFilterIfSessionIsNullAndFilterURLIsDifferent() {
         expectedEx.expect(SAMLRuntimeException.class);
         expectedEx.expectMessage("Incoming SAML message is invalid");
