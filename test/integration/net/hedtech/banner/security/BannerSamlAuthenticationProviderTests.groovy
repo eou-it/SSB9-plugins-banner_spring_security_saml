@@ -164,7 +164,7 @@ class BannerSamlAuthenticationProviderTests extends BaseIntegrationTestCase {
     }
 
     /**
-     * Verifies that authentication process fails if UDC_IDENTIFIER passed maps to disabled Oracle user.
+     * Verifies that authentication process does not fail if UDC_IDENTIFIER passed maps to disabled Oracle user.
      *
      * @throws Exception error
      */
@@ -174,11 +174,7 @@ class BannerSamlAuthenticationProviderTests extends BaseIntegrationTestCase {
         disableOracleUser(user.pidm)
 
         SAMLAuthenticationToken token = initialize(user.udcID)
-        try {
-            Authentication authentication = bannerSamlAuthenticationProvider.authenticate(token);
-        }catch(LockedException e) {
-            println("Account is locked")
-        }
+        assertNotNull (bannerSamlAuthenticationProvider.authenticate(token))
 
         enableOracleUser(user.pidm)
     }
