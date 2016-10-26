@@ -46,7 +46,7 @@ import static org.easymock.EasyMock.replay
 class BannerSamlAuthenticationProviderTests extends BaseIntegrationTestCase {
 
     public static final String UDC_IDENTIFIER = '99999SAML99999'
-    public static final String USER_NAME = 'DTYREE'
+    public static final String USER_NAME = 'BCMADMIN'
 
     def dataSource
 
