@@ -1,11 +1,13 @@
 import grails.util.Holders
 import net.hedtech.banner.controllers.ControllerUtils
+import net.hedtech.banner.security.BannerSamlAuthenticationFailureHandler
 import net.hedtech.banner.security.BannerSamlAuthenticationProvider
 import net.hedtech.banner.security.BannerSamlLogoutFilter
 import net.hedtech.banner.security.BannerSamlSavedRequestAwareAuthenticationSuccessHandler
 import net.hedtech.banner.security.BannerSamlSessionFilter
 import net.hedtech.banner.security.BannerSamlSessionRegistryImpl
 import grails.plugin.springsecurity.SpringSecurityUtils
+import org.springframework.security.saml.SAMLProcessingFilter
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.security.web.util.matcher.RequestMatcher
 
@@ -66,6 +68,17 @@ Brief summary/description of the plugin.
             userDetails = ref('userDetailsService')
             hokConsumer = ref('webSSOprofileConsumer')
             dataSource = ref(dataSource)
+        }
+
+        bannerSamlAuthenticationFailureHandler(BannerSamlAuthenticationFailureHandler){
+            defaultFailureUrl = SpringSecurityUtils.securityConfig.failureHandler.defaultFailureUrl
+        }
+
+        samlProcessingFilter(SAMLProcessingFilter) {
+            authenticationManager = ref('authenticationManager')
+            authenticationSuccessHandler = ref('successRedirectHandler')
+            sessionAuthenticationStrategy = ref('sessionFixationProtectionStrategy')
+            authenticationFailureHandler = ref('bannerSamlAuthenticationFailureHandler')
         }
 
         samlLogoutFilter(BannerSamlLogoutFilter,
