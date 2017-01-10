@@ -71,7 +71,7 @@ Brief summary/description of the plugin.
         }
 
         bannerSamlAuthenticationFailureHandler(BannerSamlAuthenticationFailureHandler){
-            defaultFailureUrl = SpringSecurityUtils.securityConfig.failureHandler.defaultFailureUrl
+            defaultFailureUrl = conf.failureHandler.defaultFailureUrl
         }
 
         samlProcessingFilter(SAMLProcessingFilter) {

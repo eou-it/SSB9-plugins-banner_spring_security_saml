@@ -13,15 +13,18 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 class BannerSamlAuthenticationFailureHandler extends  SimpleUrlAuthenticationFailureHandler{
+
     private static final Logger log = Logger.getLogger( "net.hedtech.banner.security.BannerSamlAuthenticationFailureHandler" )
 
     void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
 
-        super.onAuthenticationFailure(request, response, e);
-
         def msg = request.session.getAttribute("msg")
         def module = request.session.getAttribute("module")
         def authName = request.session.getAttribute("auth_name")
+
+        log.info "BannerCasAuthenticationFailureHandler invoked for ${authName}"
+
+        super.onAuthenticationFailure(request, response, e);
 
         Holders.getApplicationContext().publishEvent(new BannerAuthenticationEvent( authName, false, msg, module, new Date(), 1 ))
         request.session.removeAttribute("msg")
