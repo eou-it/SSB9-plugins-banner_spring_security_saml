@@ -18,6 +18,7 @@ import org.springframework.security.saml.SAMLAuthenticationToken
 import org.springframework.security.saml.SAMLConstants
 import org.springframework.security.saml.SAMLCredential
 import org.springframework.security.saml.context.SAMLMessageContext
+import org.springframework.web.context.request.RequestContextHolder as RCH
 
 /**
  * An authentication provider for Banner that authenticates a user using SAML.
@@ -78,6 +79,7 @@ class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
 
         Map claims = new HashMap();
         String assertAttributeValue
+        RCH.currentRequestAttributes().request.session.setAttribute("auth_name", credential.nameID.getValue())
         def authenticationAssertionAttribute = Holders?.config?.banner.sso.authenticationAssertionAttribute
         log.debug  "BannerSamlAuthenticationProvider.authenticate found assertAttribute $authenticationAssertionAttribute"
 
