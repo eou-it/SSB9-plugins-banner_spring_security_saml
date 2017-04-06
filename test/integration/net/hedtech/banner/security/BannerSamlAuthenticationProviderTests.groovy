@@ -40,6 +40,8 @@ import org.springframework.security.saml.storage.SAMLMessageStorage
 import org.springframework.security.saml.websso.WebSSOProfileConsumer
 import org.springframework.security.saml.websso.WebSSOProfileConsumerImpl
 
+import java.sql.DatabaseMetaData
+
 import static org.easymock.EasyMock.createMock
 import static org.easymock.EasyMock.replay
 
@@ -110,12 +112,15 @@ class BannerSamlAuthenticationProviderTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testAuthenticateOracleUser() {
+        addUDCMapping()
         def user = getOracleUser()
 
         SAMLAuthenticationToken token = initialize(user.udcID)
         Authentication authentication = (BannerAuthenticationToken)bannerSamlAuthenticationProvider.authenticate(token);
 
         assertEquals(authentication.oracleUserName,USER_NAME)
+        deleteUDCIDMappingPIDM()
+        deleteSpriden(user.pidm)
     }
 
     /**
@@ -129,6 +134,7 @@ class BannerSamlAuthenticationProviderTests extends BaseIntegrationTestCase {
         try {
             Authentication authentication = bannerSamlAuthenticationProvider.authenticate(token);
         }catch(Exception e) {
+            // TODO : this test case is failing now due to changes done in HRU-7037
             assertEquals("System is configured for external authentication, identity assertion 2 does not map to a Banner user", e.message)
         }
 
@@ -170,13 +176,16 @@ class BannerSamlAuthenticationProviderTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testAuthenticateOracleDisabledUser() {
+        addUDCMapping()
         def user = getOracleUser()
         disableOracleUser(user.pidm)
 
         SAMLAuthenticationToken token = initialize(user.udcID)
         assertNotNull (bannerSamlAuthenticationProvider.authenticate(token))
 
+        deleteUDCIDMappingPIDM()
         enableOracleUser(user.pidm)
+        deleteSpriden(user.pidm)
     }
 
     /**
@@ -391,16 +400,29 @@ class BannerSamlAuthenticationProviderTests extends BaseIntegrationTestCase {
         return bannerUDCID
     }
 
+    private void addUDCMapping() {
+        def bannerPidm = '30002'
+        def bannerId = "BCMADMIN"
+        generateSpridenRecord(bannerId, bannerPidm)
+
+        def db = getDB();
+
+        db.executeUpdate("Insert Into gobumap ( gobumap_udc_id, gobumap_pidm, gobumap_create_date, gobumap_activity_date, GOBUMAP_USER_ID) values ( ${UDC_IDENTIFIER}, ${bannerPidm}, Sysdate, Sysdate, 'BANNER')")
+        db.commit()
+        db.executeUpdate("update gobeacc set gobeacc_pidm = ${bannerPidm} where gobeacc_username = 'BCMADMIN'")
+        db.commit()
+
+        db.close()
+
+    }
     private void deleteUdcID(bannerPidm) {
         deleteSpriden(bannerPidm)
         deleteUDCIDMappingPIDM()
     }
 
     private getDB() {
-        def configFile = new File("${System.properties['user.home']}/.grails/banner_configuration.groovy")
-        def slurper = new ConfigSlurper(grails.util.GrailsUtil.environment)
-        def config = slurper.parse(configFile.toURI().toURL())
-        def url = config.get("bannerDataSource").url
+        DatabaseMetaData dmd = sessionFactory.getCurrentSession().connection().getMetaData();
+        String url = dmd.getURL();
         def db = Sql.newInstance(url,   //  db =  new Sql( connectInfo.url,
                 "baninst1",
                 "u_pick_it",
@@ -460,8 +482,6 @@ class BannerSamlAuthenticationProviderTests extends BaseIntegrationTestCase {
         def db = getDB();
 
         db.executeUpdate("Insert Into Twgrrole ( Twgrrole_Pidm, Twgrrole_Role, Twgrrole_Activity_Date) values ( ${pidm}, 'STUDENT', Sysdate)")
-        db.commit()
-        db.executeUpdate("INSERT INTO SGBSTDN (SGBSTDN_PIDM,SGBSTDN_TERM_CODE_EFF,SGBSTDN_STST_CODE,SGBSTDN_LEVL_CODE,SGBSTDN_STYP_CODE,SGBSTDN_TERM_CODE_ADMIT,SGBSTDN_CAMP_CODE,SGBSTDN_RESD_CODE,SGBSTDN_COLL_CODE_1,SGBSTDN_DEGC_CODE_1,SGBSTDN_MAJR_CODE_1,SGBSTDN_ACTIVITY_DATE,SGBSTDN_BLCK_CODE,SGBSTDN_PRIM_ROLL_IND,SGBSTDN_PROGRAM_1,SGBSTDN_DATA_ORIGIN,SGBSTDN_USER_ID,SGBSTDN_SURROGATE_ID,SGBSTDN_VERSION) values (${pidm},'201410','AS','UG','S','201410','M','R','AS','BA','HIST',to_date('02-MAR-14','DD-MON-RR'),'NUTR','N','BA-HIST','Banner','BANPROXY',SGBSTDN_SURROGATE_ID_SEQUENCE.nextval,1)")
         db.commit()
         db.close()
 
