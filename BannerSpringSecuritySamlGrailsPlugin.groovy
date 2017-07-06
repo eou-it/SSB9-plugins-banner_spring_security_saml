@@ -1,3 +1,7 @@
+/*******************************************************************************
+ Copyright 2015-2017 Ellucian Company L.P. and its affiliates.
+ *******************************************************************************/
+
 import grails.util.Holders
 import net.hedtech.banner.controllers.ControllerUtils
 import net.hedtech.banner.security.BannerSamlAuthenticationFailureHandler
@@ -15,7 +19,7 @@ import javax.servlet.Filter
 
 class BannerSpringSecuritySamlGrailsPlugin {
     // the plugin version
-    def version = "9.21"
+    def version = "9.23"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.5 > *"
 

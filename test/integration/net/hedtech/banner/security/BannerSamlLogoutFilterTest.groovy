@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2017 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 
 package net.hedtech.banner.security
@@ -42,6 +42,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler
 
 import javax.servlet.http.HttpSession
+import java.sql.DatabaseMetaData
 
 import static org.easymock.EasyMock.createMock
 import static org.junit.Assert.assertEquals
@@ -355,10 +356,8 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
     }
 
     private getDB() {
-        def configFile = new File("${System.properties['user.home']}/.grails/banner_configuration.groovy")
-        def slurper = new ConfigSlurper(grails.util.GrailsUtil.environment)
-        def config = slurper.parse(configFile.toURI().toURL())
-        def url = config.get("bannerDataSource").url
+        DatabaseMetaData dmd = sessionFactory.getCurrentSession().connection().getMetaData()
+        String url = dmd.getURL()
         def db = Sql.newInstance(url,   //  db =  new Sql( connectInfo.url,
                 "baninst1",
                 "u_pick_it",
@@ -418,8 +417,6 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
         def db = getDB();
 
         db.executeUpdate("Insert Into Twgrrole ( Twgrrole_Pidm, Twgrrole_Role, Twgrrole_Activity_Date) values ( ${pidm}, 'STUDENT', Sysdate)")
-        db.commit()
-        db.executeUpdate("INSERT INTO SGBSTDN (SGBSTDN_PIDM,SGBSTDN_TERM_CODE_EFF,SGBSTDN_STST_CODE,SGBSTDN_LEVL_CODE,SGBSTDN_STYP_CODE,SGBSTDN_TERM_CODE_ADMIT,SGBSTDN_CAMP_CODE,SGBSTDN_RESD_CODE,SGBSTDN_COLL_CODE_1,SGBSTDN_DEGC_CODE_1,SGBSTDN_MAJR_CODE_1,SGBSTDN_ACTIVITY_DATE,SGBSTDN_BLCK_CODE,SGBSTDN_PRIM_ROLL_IND,SGBSTDN_PROGRAM_1,SGBSTDN_DATA_ORIGIN,SGBSTDN_USER_ID,SGBSTDN_SURROGATE_ID,SGBSTDN_VERSION) values (${pidm},'201410','AS','UG','S','201410','M','R','AS','BA','HIST',to_date('02-MAR-14','DD-MON-RR'),'NUTR','N','BA-HIST','Banner','BANPROXY',SGBSTDN_SURROGATE_ID_SEQUENCE.nextval,1)")
         db.commit()
         db.close()
 
