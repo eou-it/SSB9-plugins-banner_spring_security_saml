@@ -6,7 +6,6 @@ package net.hedtech.banner.security
 
 import grails.spring.BeanBuilder
 import grails.util.Holders
-import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.apache.commons.dbcp.BasicDataSource
 import org.codehaus.groovy.runtime.typehandling.GroovyCastException
@@ -42,7 +41,6 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler
 
 import javax.servlet.http.HttpSession
-import java.sql.DatabaseMetaData
 
 import static org.easymock.EasyMock.createMock
 import static org.junit.Assert.assertEquals
@@ -50,7 +48,7 @@ import static org.junit.Assert.assertNotNull
 
 class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
 
-    public static final String UDC_IDENTIFIER = '99999SAML99999'
+    public static final String UDC_IDENTIFIER = 'INTEGRATION_TEST_SAML'
 
     def dataSource
     MetadataManager metadata;
@@ -104,17 +102,11 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
         bannerSamlAuthenticationProvider.dataSource = this.dataSource
         bannerSamlAuthenticationProvider.setForcePrincipalAsString(false)
         bannerSamlAuthenticationProvider.setConsumer(consumer);
-
-        bannerPidm = generatePidm()
-        udc_id = createUdcID(bannerPidm)
-
-
-
+        udc_id =UDC_IDENTIFIER
     }
 
     @After
     public void tearDown() {
-        deleteUdcID(bannerPidm)
         logout()
     }
 
@@ -336,153 +328,5 @@ class BannerSamlLogoutFilterTest extends BaseIntegrationTestCase {
         }
         ApplicationContext testSpringContext = bb.createApplicationContext()
         return testSpringContext
-    }
-
-    private def createUdcID(bannerPidm) {
-
-        def bannerId = "DUMMYSAML"
-
-        generateSpridenRecord(bannerId, bannerPidm)
-        addStudentRoleToSpriden(bannerPidm)
-
-        def bannerUDCID = generateUDCIDMappingPIDM(bannerPidm)
-
-        return bannerUDCID
-    }
-
-    private void deleteUdcID(bannerPidm) {
-        deleteSpriden(bannerPidm)
-        deleteUDCIDMappingPIDM()
-    }
-
-    private getDB() {
-        DatabaseMetaData dmd = sessionFactory.getCurrentSession().connection().getMetaData()
-        String url = dmd.getURL()
-        def db = Sql.newInstance(url,   //  db =  new Sql( connectInfo.url,
-                "baninst1",
-                "u_pick_it",
-                'oracle.jdbc.driver.OracleDriver')
-        db
-    }
-
-    private def generatePidm() {
-
-        def sql = getDB();
-
-        String idSql = """select gb_common.f_generate_pidm pidm from dual """
-        def bannerValues = sql.firstRow(idSql)
-
-        sql?.close() // note that the test will close the connection, since it's our current session's connection
-
-        return bannerValues.pidm
-    }
-
-
-    private void generateSpridenRecord(bannerId, bannerPidm) {
-
-        def sql = getDB();
-
-        sql.call("""
-         declare
-
-         Lv_Id_Ref Gb_Identification.Identification_Ref;
-
-         spriden_current Gb_Identification.identification_rec;
-         test_pidm spriden.spriden_pidm%type;
-         test_rowid varchar2(30);
-         begin
-
-         gb_identification.p_create(
-         P_ID_INOUT => ${bannerId},
-         P_LAST_NAME => 'Miller',
-         P_FIRST_NAME => 'Ann',
-         P_MI => 'Elizabeth',
-         P_CHANGE_IND => NULL,
-         P_ENTITY_IND => 'P',
-         P_User => User,
-         P_ORIGIN => 'banner',
-         P_NTYP_CODE => NULL,
-         P_DATA_ORIGIN => 'banner',
-         P_PIDM_INOUT => ${bannerPidm},
-         P_Rowid_Out => Test_Rowid);
-         end ;
-         """)
-
-        sql.commit()
-        sql.close()
-    }
-
-    private void addStudentRoleToSpriden(pidm) {
-
-        def db = getDB();
-
-        db.executeUpdate("Insert Into Twgrrole ( Twgrrole_Pidm, Twgrrole_Role, Twgrrole_Activity_Date) values ( ${pidm}, 'STUDENT', Sysdate)")
-        db.commit()
-        db.close()
-
-    }
-
-    private def generateUDCIDMappingPIDM(pidm) {
-
-        def db = getDB();
-
-        db.call("""
-         declare
-         test_rowid varchar2(30);
-         begin
-
-         gb_gobumap.p_create(
-         p_udc_id => ${UDC_IDENTIFIER},
-         p_pidm => ${pidm},
-         p_create_date => sysdate,
-         p_user_id => 'banner',
-         p_data_origin => 'banner',
-         P_Rowid_Out => Test_Rowid);
-
-         end ;
-         """)
-
-
-        String idSql = """select GOBUMAP_UDC_ID from gobumap where gobumap_udc_id = '${UDC_IDENTIFIER}' """
-        def bannerValues = db.firstRow(idSql)
-        def spridenId
-        def sqlStatement2 = '''SELECT spriden_id, gobumap_pidm FROM gobumap,spriden WHERE spriden_pidm = gobumap_pidm AND spriden_change_ind is null AND gobumap_udc_id = ?'''
-        db.eachRow(sqlStatement2, [UDC_IDENTIFIER]) { row ->
-            spridenId = row.spriden_id
-            pidm = row.gobumap_pidm
-        }
-
-        db.commit()
-        db.close()
-
-        return bannerValues.GOBUMAP_UDC_ID
-    }
-
-    private void deleteSpriden(pidm) {
-
-        def db = getDB();
-
-        db.executeUpdate("delete spriden where spriden_pidm=${pidm}")
-        db.commit()
-        db.close()
-    }
-
-    private void deleteUDCIDMappingPIDM() {
-
-        def db = getDB();
-
-        db.call("""
-         declare
-         test_rowid varchar2(30);
-         begin
-
-         gb_gobumap.p_delete(
-         p_udc_id => ${UDC_IDENTIFIER});
-
-         end ;
-         """)
-
-        db.commit()
-        db.close()
     }
 }
