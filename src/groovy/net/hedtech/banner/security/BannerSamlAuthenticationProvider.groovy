@@ -8,6 +8,7 @@ import org.apache.log4j.Logger
 import org.opensaml.common.SAMLException
 import org.opensaml.common.SAMLRuntimeException
 import org.opensaml.xml.encryption.DecryptionException
+import org.opensaml.xml.schema.XSAny
 import org.opensaml.xml.validation.ValidationException
 import org.springframework.security.authentication.AuthenticationServiceException
 import org.springframework.security.core.Authentication
@@ -77,7 +78,7 @@ class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
             throw new AuthenticationServiceException("Error decrypting SAML message", e)
         }
 
-        Map claims = new HashMap();
+        Map claims = new HashMap()
         String assertAttributeValue
         RCH.currentRequestAttributes().request.session.setAttribute("auth_name", credential.nameID.getValue())
         def authenticationAssertionAttribute = Holders?.config?.banner.sso.authenticationAssertionAttribute
@@ -85,10 +86,12 @@ class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
 
         for(attribute in credential.getAttributes()) {
             if(attribute.name == authenticationAssertionAttribute) {
-                assertAttributeValue = attribute.attributeValues.get(0).getValue()
+                //assertAttributeValue = attribute.attributeValues.get(0).getValue()
+                assertAttributeValue = getAttributeValue(attribute.attributeValues.get(0))
                 log.debug  "BannerSamlAuthenticationProvider.authenticate found assertAttributeValue $assertAttributeValue"
             } else {
-                def value = attribute.attributeValues.get(0).getValue()
+                //def value = attribute.attributeValues.get(0).getValue()
+                def value = getAttributeValue(attribute.attributeValues.get(0))
                 claims.put(attribute.name, value)
                 log.debug  "BannerSamlAuthenticationProvider.authenticate found claim value $value"
             }
@@ -108,8 +111,8 @@ class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
 
         BannerAuthenticationToken bannerAuthenticationToken = AuthenticationProviderUtility.createAuthenticationToken(dbUser,dataSource, this)
         bannerAuthenticationToken.claims = claims
-        bannerAuthenticationToken.SAMLCredential=credential
-        bannerAuthenticationToken.sessionIndex=credential.getAuthenticationAssertion().getStatements().get(0).getAt("sessionIndex")
+        bannerAuthenticationToken.SAMLCredential = credential
+        bannerAuthenticationToken.sessionIndex = credential.getAuthenticationAssertion().getStatements().get(0).getAt("sessionIndex")
 
         log.debug "BannerSamlAuthenticationProvider.authenticate BannerAuthenticationToken updated with claims $bannerAuthenticationToken"
 
@@ -118,4 +121,13 @@ class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
     }
 
 
+    private def getAttributeValue(def element) {
+        def value
+        if (element instanceof XSAny) {
+            value = element.getTextContent()
+        } else {
+            value = element.getValue()
+        }
+        return value
+    }
 }
