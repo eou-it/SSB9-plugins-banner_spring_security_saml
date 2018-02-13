@@ -113,11 +113,7 @@ class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
         BannerAuthenticationToken bannerAuthenticationToken = AuthenticationProviderUtility.createAuthenticationToken(dbUser,dataSource, this)
         bannerAuthenticationToken.claims = claims
         bannerAuthenticationToken.SAMLCredential = credential
-        credential.getAuthenticationAssertion().getStatements().each({
-            if(it instanceof AuthnStatementImpl){
-                bannerAuthenticationToken.sessionIndex = it.getAt("sessionIndex")
-            }
-        })
+        bannerAuthenticationToken.sessionIndex = credential.getAuthenticationAssertion().getStatements().find({it instanceof AuthnStatementImpl})?.getAt("sessionIndex")
         log.debug "BannerSamlAuthenticationProvider.authenticate BannerAuthenticationToken updated with claims $bannerAuthenticationToken"
 
         return bannerAuthenticationToken
