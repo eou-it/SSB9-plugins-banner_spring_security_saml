@@ -1,5 +1,5 @@
 /*********************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2018 Ellucian Company L.P. and its affiliates.
  **********************************************************************************/
 grails.servlet.version = "2.5"
 grails.project.class.dir = "target/classes"
@@ -16,7 +16,12 @@ grails.project.dependency.resolution = {
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
+        if (System.properties['PROXY_SERVER_NAME']) {
+            mavenRepo "${System.properties['PROXY_SERVER_NAME']}"
+        }
         grailsCentral()
+        grailsPlugins()
+        grailsHome()
         mavenLocal()
         mavenCentral()
         mavenRepo "http://repo.spring.io/milestone/"
@@ -33,9 +38,16 @@ grails.project.dependency.resolution = {
             export = false
         }
 
+        compile ('org.bouncycastle:bcprov-jdk15on:1.59')
+        compile('org.owasp.esapi:esapi:2.1.0') {
+            excludes 'antisamy', 'bsh-core', 'commons-beanutils-core', 'commons-collections', 'commons-configuration', 'commons-fileupload', 'commons-io', 'jsp-api', 'junit', 'log4j', 'servlet-api', 'xom'
+        }
+        compile('org.opensaml:xmltooling:1.4.4')
     }
 
     plugins {
-        compile ":spring-security-saml:2.0.1"
+        compile (":spring-security-saml:2.0.1"){
+            excludes 'bcprov-jdk15','xmltooling'
+        }
     }
 }
