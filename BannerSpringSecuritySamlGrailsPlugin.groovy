@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2017 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2018 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 
 import grails.util.Holders
@@ -19,7 +19,7 @@ import javax.servlet.Filter
 
 class BannerSpringSecuritySamlGrailsPlugin {
     // the plugin version
-    def version = "9.26"
+    def version = "9.26.2"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.5 > *"
 
