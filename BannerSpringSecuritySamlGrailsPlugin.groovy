@@ -19,7 +19,7 @@ import javax.servlet.Filter
 
 class BannerSpringSecuritySamlGrailsPlugin {
     // the plugin version
-    def version = "9.26.2"
+    def version = "9.27"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.5 > *"
 
