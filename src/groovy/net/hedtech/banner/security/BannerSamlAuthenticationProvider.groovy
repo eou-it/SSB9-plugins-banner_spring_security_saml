@@ -5,6 +5,7 @@ package net.hedtech.banner.security
 
 import grails.util.Holders
 import org.apache.log4j.Logger
+import org.opensaml.saml2.core.impl.AuthnStatementImpl
 import org.opensaml.common.SAMLException
 import org.opensaml.common.SAMLRuntimeException
 import org.opensaml.xml.encryption.DecryptionException
@@ -112,8 +113,7 @@ class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
         BannerAuthenticationToken bannerAuthenticationToken = AuthenticationProviderUtility.createAuthenticationToken(dbUser,dataSource, this)
         bannerAuthenticationToken.claims = claims
         bannerAuthenticationToken.SAMLCredential = credential
-        bannerAuthenticationToken.sessionIndex = credential.getAuthenticationAssertion().getStatements().get(0).getAt("sessionIndex")
-
+        bannerAuthenticationToken.sessionIndex = credential.getAuthenticationAssertion().getStatements().find({it instanceof AuthnStatementImpl})?.getAt("sessionIndex")
         log.debug "BannerSamlAuthenticationProvider.authenticate BannerAuthenticationToken updated with claims $bannerAuthenticationToken"
 
         return bannerAuthenticationToken
