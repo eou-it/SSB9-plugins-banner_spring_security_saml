@@ -71,7 +71,7 @@ dependencies {
 
     // Added for BannerXE - Internal plugin dependency
     //TODO Add Dependency of Banner_CORE
-    //compile project(':banner-core')
+    compile project(':banner-core')
 }
 
 bootRun {
