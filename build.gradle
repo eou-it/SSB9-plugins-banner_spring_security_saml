@@ -57,20 +57,58 @@ dependencies {
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails:grails-web-testing-support"
 
-    //Added for Hibernate dependency
-    compile "org.grails.plugins:hibernate5"
-
-    compile "org.hibernate:hibernate-core:5.1.5.Final"
-    compile "org.hibernate:hibernate-ehcache:5.1.5.Final"
-
     //Added for BannerXE Spring security SAML Plugin dependency
-    compile "org.grails.plugins:spring-security-saml:3.3.0"
+    compile ("org.grails.plugins:spring-security-saml:3.3.0"){
+        exclude group:"org.bouncycastle", module:"bcprov-jdk15"
+        exclude module: "xmltooling"
+    }
+    compile ('org.bouncycastle:bcprov-jdk15on:1.59')
+
+    compile("org.opensaml:openws:1.4.4") {
+        exclude module: "commons-codec"
+        exclude module: "commons-httpclient"
+        exclude module: "jcip-annotations"
+        exclude module: "jcl-over-slf4j"
+        exclude module: "joda-time"
+        exclude module: "jul-to-slf4j"
+        exclude module: "junit"
+        exclude module: "log4j-over-slf4j"
+        exclude module: "logback-classic"
+        exclude module: "serializer"
+        exclude module: "servlet-api"
+        exclude module: "slf4j-api"
+        exclude module: "spring-core"
+        exclude module: "spring-mock"
+        exclude module: "testng"
+        exclude module: "xalan"
+        exclude module: "xercesImpl"
+        exclude module: "xml-apis"
+        exclude module: "xml-resolver"
+        exclude module: "xmltooling"
+        exclude module: "xmlunit"
+    }
+
+
+    compile("org.owasp.esapi:esapi:2.0.1") {
+        exclude module: "antisamy"
+        exclude module: "bsh-core"
+        exclude module: "commons-beanutils-core"
+        exclude module: "commons-collections"
+        exclude module: "commons-configuration"
+        exclude module: "commons-fileupload"
+        exclude module: "commons-io"
+        exclude module: "jsp-api"
+        exclude module: "junit"
+        exclude module: "log4j"
+        exclude module: "servlet-api"
+        exclude module: "xom"
+    }
+    compile("org.opensaml:xmltooling:1.4.4")
 
     //Added for SAML
     compile "org.springframework.boot:spring-boot-starter-security:"
 
     // Added for BannerXE - Internal plugin dependency
-    //TODO Add Dependency of Banner_CORE
     compile project(':banner-core')
 }
 
