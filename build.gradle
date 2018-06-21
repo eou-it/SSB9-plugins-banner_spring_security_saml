@@ -108,8 +108,13 @@ dependencies {
     //Added for SAML
     compile "org.springframework.boot:spring-boot-starter-security:"
 
-    // Added for BannerXE - Internal plugin dependency
-    compile project(':banner-core')
+}
+
+// Added for BannerXE - Internal plugin dependency
+grails {
+    plugins {
+        compile project(':banner-core')
+    }
 }
 
 bootRun {
