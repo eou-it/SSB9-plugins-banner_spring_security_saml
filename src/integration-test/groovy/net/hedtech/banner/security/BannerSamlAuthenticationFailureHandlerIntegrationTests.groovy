@@ -6,8 +6,8 @@ package net.hedtech.banner.security
 import grails.util.Holders
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
-import org.codehaus.groovy.grails.plugins.testing.GrailsMockHttpServletRequest
-import org.codehaus.groovy.grails.plugins.testing.GrailsMockHttpServletResponse
+import org.grails.plugins.testing.GrailsMockHttpServletRequest
+import org.grails.plugins.testing.GrailsMockHttpServletResponse
 import org.easymock.EasyMock
 import org.junit.After
 import org.junit.Before
