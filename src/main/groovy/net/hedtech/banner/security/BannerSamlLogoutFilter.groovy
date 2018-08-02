@@ -4,7 +4,7 @@
 package net.hedtech.banner.security
 
 import net.hedtech.banner.security.BannerAuthenticationToken
-import org.apache.log4j.Logger
+import groovy.util.logging.Slf4j
 import org.opensaml.common.SAMLException
 import org.opensaml.saml2.metadata.provider.MetadataProviderException
 import org.opensaml.ws.message.encoder.MessageEncodingException
@@ -33,9 +33,9 @@ import javax.servlet.http.HttpServletResponse
 /**
  * An Filter added to handle the SAMl logout with token of type BannerAuthenticationToken.
  */
+@Slf4j
 class BannerSamlLogoutFilter extends LogoutFilter {
 
-    private static final Logger log = Logger.getLogger( "net.hedtech.banner.security.BannerSamlLogoutFilter" )
     protected SAMLContextProvider contextProvider
     protected SingleLogoutProfile profile
     /**
@@ -118,10 +118,10 @@ class BannerSamlLogoutFilter extends LogoutFilter {
      * @param request request used to determine whether to enable this filter
      * @return true if this filter should be used
      */
-    @Override
+   /* @Override
     protected boolean requiresLogout(HttpServletRequest request, HttpServletResponse response) {
-        return SAMLUtil.processFilter(getFilterProcessesUrl(), request)
-    }
+        return requiresLogout
+    }*/
 
     /**
      * Performs global logout in case current user logged in using SAML and user hasn't selected local logout only

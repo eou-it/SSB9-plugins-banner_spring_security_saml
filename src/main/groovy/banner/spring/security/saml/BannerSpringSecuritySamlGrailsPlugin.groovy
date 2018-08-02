@@ -3,6 +3,7 @@ package banner.spring.security.saml
 import grails.plugin.springsecurity.SpringSecurityUtils
 import grails.plugins.Plugin
 import grails.util.Holders
+import net.hedtech.banner.controllers.ControllerUtils
 import net.hedtech.banner.security.*
 
 //TODO ControllerUtils: To be uncomment after adding Banner_core dependency
@@ -14,7 +15,6 @@ import org.springframework.security.web.util.matcher.RequestMatcher
 import javax.servlet.Filter
 
 class BannerSpringSecuritySamlGrailsPlugin extends Plugin {
-
 
     def version = "9.27"
     // the version or versions of Grails the plugin is designed for
@@ -42,22 +42,6 @@ Brief summary/description of the plugin.
     // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/banner-spring-security-saml"
 
-    // Extra (optional) plugin metadata
-
-    // License: one of 'APACHE', 'GPL2', 'GPL3'
-//    def license = "APACHE"
-
-    // Details of company behind the plugin (if there is one)
-//    def organization = [ name: "My Company", url: "http://www.my-company.com/" ]
-
-    // Any additional developers beyond the author specified above.
-//    def developers = [ [ name: "Joe Bloggs", email: "joe@bloggs.net" ]]
-
-    // Location of the plugin's issue tracker.
-//    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]
-
-    // Online location of the plugin's browseable source code.
-//    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
 
     //TODO:: doWithWebDescriptor method signature is changed and need to modify this.
     /*
@@ -105,7 +89,7 @@ Brief summary/description of the plugin.
         }
 
         samlLogoutFilter(BannerSamlLogoutFilter,
-                ref('successLogoutHandler'), ref('logoutHandler'), ref('logoutHandler'))
+                ref('logoutSuccessHandler'), ref('logoutHandler'), ref('logoutHandler'))
 
         samlSessionRegistry(BannerSamlSessionRegistryImpl)
 
@@ -139,22 +123,27 @@ Brief summary/description of the plugin.
             providerNames.addAll conf.providerNames
         } else {
             //TODO ControllerUtils: To be uncomment after adding Banner_core dependency
-            /*if(ControllerUtils.isGuestAuthenticationEnabled()){
+            if(ControllerUtils.isGuestAuthenticationEnabled()){
                 providerNames = ['samlAuthenticationProvider','selfServiceBannerAuthenticationProvider','bannerAuthenticationProvider']
-            } else{*/
-            providerNames = ['samlAuthenticationProvider']
-            /*}*/
+            } else {
+                providerNames = ['samlAuthenticationProvider']
+            }
         }
         applicationContext.authenticationManager.providers = createBeanList(providerNames, applicationContext)
 
         // Define the spring security filters
         def authenticationProvider = Holders?.config?.banner.sso.authenticationProvider
-        LinkedHashMap<String, String> filterChain = new LinkedHashMap();
+        LinkedHashMap filterChain = new LinkedHashMap()
         switch (authenticationProvider) {
             case 'saml':
                 filterChain['/**/api/**'] = 'statelessSecurityContextPersistenceFilter,bannerMepCodeFilter,authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor'
                 filterChain['/**/qapi/**'] = 'statelessSecurityContextPersistenceFilter,bannerMepCodeFilter,authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor'
                 filterChain['/**'] = 'samlSessionFilter,securityContextPersistenceFilter,bannerMepCodeFilter,samlEntryPoint,metadataFilter,samlProcessingFilter,samlLogoutFilter,samlLogoutProcessingFilter,logoutFilter,authenticationProcessingFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor'
+
+               // filterChain << [pattern: '/**/api/**', filters: 'statelessSecurityContextPersistenceFilter,bannerMepCodeFilter,authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor']
+                //filterChain << [pattern: '/**/qapi/**',filters: 'statelessSecurityContextPersistenceFilter,bannerMepCodeFilter,authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor']
+                //filterChain << [pattern: '/**', filters: 'samlSessionFilter,securityContextPersistenceFilter,bannerMepCodeFilter,samlEntryPoint,metadataFilter,samlProcessingFilter,samlLogoutFilter,samlLogoutProcessingFilter,logoutFilter,authenticationProcessingFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor']
+
                 break
             default:
                 break
@@ -163,7 +152,7 @@ Brief summary/description of the plugin.
         LinkedHashMap<RequestMatcher, List<Filter>> filterChainMap = new LinkedHashMap()
         filterChain.each { key, value ->
             def filters = value.toString().split(',').collect {
-                name -> applicationContext.getBean(name)
+              name -> applicationContext.getBean(name)
             }
             filterChainMap[new AntPathRequestMatcher(key)] = filters
         }

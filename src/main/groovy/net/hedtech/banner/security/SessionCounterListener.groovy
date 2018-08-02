@@ -5,15 +5,15 @@
 
 package net.hedtech.banner.security
 
-import org.apache.log4j.Logger
+import groovy.util.logging.Slf4j
 import org.springframework.context.ApplicationContext
 import org.springframework.web.context.support.WebApplicationContextUtils
 
 import javax.servlet.http.HttpSessionEvent
 import javax.servlet.http.HttpSessionListener
 
+@Slf4j
 public class SessionCounterListener implements HttpSessionListener {
-    private static final Logger log = Logger.getLogger( SessionCounterListener.class )
 
     private static int totalActiveSessions;
 

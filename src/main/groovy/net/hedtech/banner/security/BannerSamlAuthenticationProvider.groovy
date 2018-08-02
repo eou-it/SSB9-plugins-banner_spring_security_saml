@@ -4,7 +4,7 @@
 package net.hedtech.banner.security
 
 import grails.util.Holders
-import org.apache.log4j.Logger
+import groovy.util.logging.Slf4j
 import org.opensaml.saml2.core.impl.AuthnStatementImpl
 import org.opensaml.common.SAMLException
 import org.opensaml.common.SAMLRuntimeException
@@ -25,10 +25,11 @@ import org.springframework.web.context.request.RequestContextHolder as RCH
 /**
  * An authentication provider for Banner that authenticates a user using SAML.
  */
+@Slf4j
 class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
     def dataSource
     // note: using 'getClass()' here doesn't work
-    private static final Logger log = Logger.getLogger( "net.hedtech.banner.security.BannerSamlAuthenticationProvider" )
+
 
     public BannerSamlAuthenticationProvider() {
         super();

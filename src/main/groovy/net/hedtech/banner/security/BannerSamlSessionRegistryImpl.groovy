@@ -3,14 +3,11 @@
  *******************************************************************************/
 package net.hedtech.banner.security
 
-import org.apache.log4j.Logger
-
+import groovy.util.logging.Slf4j
 import javax.servlet.http.HttpSession
 
+@Slf4j
 class BannerSamlSessionRegistryImpl {
-
-    private static final Logger log = Logger.getLogger( BannerSamlSessionRegistryImpl.class )
-
 
 
     /** <sessionIndexIds:String,String> */

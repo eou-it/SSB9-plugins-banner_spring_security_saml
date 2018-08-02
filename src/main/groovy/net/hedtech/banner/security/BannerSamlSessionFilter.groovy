@@ -3,6 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.security
 
+import groovy.util.logging.Slf4j
 import org.apache.log4j.Logger
 import org.opensaml.common.SAMLException
 import org.opensaml.common.SAMLRuntimeException
@@ -24,8 +25,9 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpSession
 
+@Slf4j
 class BannerSamlSessionFilter extends GenericFilterBean{
-    private static final Logger log = Logger.getLogger( BannerSamlSessionFilter.class )
+
 
     private BannerSamlSessionRegistryImpl sessionRegistry;
     private SAMLContextProvider contextProvider;
