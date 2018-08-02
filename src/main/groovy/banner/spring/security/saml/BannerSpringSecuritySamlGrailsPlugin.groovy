@@ -5,11 +5,9 @@ import grails.plugins.Plugin
 import grails.util.Holders
 import net.hedtech.banner.controllers.ControllerUtils
 import net.hedtech.banner.security.*
-
-//TODO ControllerUtils: To be uncomment after adding Banner_core dependency
-//import net.hedtech.banner.controllers.ControllerUtils
-//TODO Optimize the imports of open saml.
 import org.springframework.security.saml.*
+import org.springframework.security.web.DefaultSecurityFilterChain
+import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.security.web.util.matcher.RequestMatcher
 import javax.servlet.Filter
@@ -23,7 +21,6 @@ class BannerSpringSecuritySamlGrailsPlugin extends Plugin {
             bannerCore: '9.28.1 => *',
             springSecuritySaml: '3.3.0 => *'
     ]
-
 
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
@@ -122,7 +119,6 @@ Brief summary/description of the plugin.
         if (conf.providerNames) {
             providerNames.addAll conf.providerNames
         } else {
-            //TODO ControllerUtils: To be uncomment after adding Banner_core dependency
             if(ControllerUtils.isGuestAuthenticationEnabled()){
                 providerNames = ['samlAuthenticationProvider','selfServiceBannerAuthenticationProvider','bannerAuthenticationProvider']
             } else {
@@ -139,25 +135,19 @@ Brief summary/description of the plugin.
                 filterChain['/**/api/**'] = 'statelessSecurityContextPersistenceFilter,bannerMepCodeFilter,authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor'
                 filterChain['/**/qapi/**'] = 'statelessSecurityContextPersistenceFilter,bannerMepCodeFilter,authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor'
                 filterChain['/**'] = 'samlSessionFilter,securityContextPersistenceFilter,bannerMepCodeFilter,samlEntryPoint,metadataFilter,samlProcessingFilter,samlLogoutFilter,samlLogoutProcessingFilter,logoutFilter,authenticationProcessingFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor'
-
-               // filterChain << [pattern: '/**/api/**', filters: 'statelessSecurityContextPersistenceFilter,bannerMepCodeFilter,authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor']
-                //filterChain << [pattern: '/**/qapi/**',filters: 'statelessSecurityContextPersistenceFilter,bannerMepCodeFilter,authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor']
-                //filterChain << [pattern: '/**', filters: 'samlSessionFilter,securityContextPersistenceFilter,bannerMepCodeFilter,samlEntryPoint,metadataFilter,samlProcessingFilter,samlLogoutFilter,samlLogoutProcessingFilter,logoutFilter,authenticationProcessingFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor']
-
                 break
             default:
                 break
         }
 
-        LinkedHashMap<RequestMatcher, List<Filter>> filterChainMap = new LinkedHashMap()
+        List<SecurityFilterChain> chains = new ArrayList<SecurityFilterChain>()
         filterChain.each { key, value ->
             def filters = value.toString().split(',').collect {
               name -> applicationContext.getBean(name)
             }
-            filterChainMap[new AntPathRequestMatcher(key)] = filters
+            chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher(key), filters));
         }
-        applicationContext.springSecurityFilterChain.filterChainMap = filterChainMap
-
+        applicationContext.springSecurityFilterChain.filterChains = chains
     }
 
     void onChange(Map<String, Object> event) {
