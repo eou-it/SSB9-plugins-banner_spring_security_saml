@@ -79,7 +79,7 @@ class BannerSamlLogoutFilter extends LogoutFilter {
                 BannerAuthenticationToken auth=SecurityContextHolder.getContext().getAuthentication();
                 if (auth != null && isGlobalLogout(request,auth)  && auth.getSAMLCredential() != null) {
                     if(!(auth instanceof BannerAuthenticationToken)) {
-                        log.fatal("Authentication object doesn't contain SAML credential, cannot perform global logout")
+                        log.error("Authentication object doesn't contain SAML credential, cannot perform global logout")
                         throw new ServletException("Authentication object doesn't contain SAML credential, cannot perform global logout")
                     }
                     for (LogoutHandler handler : globalHandlers) {
@@ -93,17 +93,17 @@ class BannerSamlLogoutFilter extends LogoutFilter {
                     log.debug("Logout Request initiated with ontext : " + context)
                 }
                 else {
-                    log.fatal("Error initializing global logout due to internal errors. Only Local logout will be initiated.")
+                    log.error("Error initializing global logout due to internal errors. Only Local logout will be initiated.")
                     super.doFilter(request,response,chain)
                 }
             } catch (SAMLException e1) {
-                log.fatal("Error initializing global logout " + e1)
+                log.error("Error initializing global logout " + e1)
                 throw new ServletException("Error initializing global logout", e1)
             } catch (MetadataProviderException e1) {
-                log.fatal("Error processing metadata " + e1)
+                log.error("Error processing metadata " + e1)
                 throw new ServletException("Error processing metadata", e1)
             } catch (MessageEncodingException e1) {
-                log.fatal("Error encoding outgoing message " + e1)
+                log.error("Error encoding outgoing message " + e1)
                 throw new ServletException("Error encoding outgoing message", e1)
             }
         } else {

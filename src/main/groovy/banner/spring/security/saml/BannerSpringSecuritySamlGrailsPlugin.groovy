@@ -17,9 +17,11 @@ class BannerSpringSecuritySamlGrailsPlugin extends Plugin {
     def version = "9.27"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "3.3.2 > *"
+    List loadAfter = ['bannerCore','bannerGeneralUtility','springSecuritySaml']
     def dependsOn = [
             bannerCore: '9.28.1 => *',
-            springSecuritySaml: '3.3.0 => *'
+            springSecuritySaml: '3.3.0 => *',
+            bannerGeneralUtility:'9.28.1 => *'
     ]
 
     // resources that are excluded from plugin packaging
@@ -145,7 +147,7 @@ Brief summary/description of the plugin.
             def filters = value.toString().split(',').collect {
               name -> applicationContext.getBean(name)
             }
-            chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher(key), filters));
+            chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher(key), filters))
         }
         applicationContext.springSecurityFilterChain.filterChains = chains
     }

@@ -64,19 +64,19 @@ class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
                 throw new SAMLException("Unsupported profile encountered in the context " + context.getCommunicationProfileId());
             }
         } catch (SAMLRuntimeException e) {
-            log.fatal  "BannerSamlAuthenticationProvider.authenticate ecountered an SAMLRuntimeException $e"
+            log.error  "BannerSamlAuthenticationProvider.authenticate ecountered an SAMLRuntimeException $e"
             throw new AuthenticationServiceException("Error validating SAML message", e)
         } catch (SAMLException e) {
-            log.fatal  "BannerSamlAuthenticationProvider.authenticate ecountered an SAMLException $e"
+            log.error "BannerSamlAuthenticationProvider.authenticate ecountered an SAMLException $e"
             throw new AuthenticationServiceException("Error validating SAML message", e)
         } catch (ValidationException e) {
-            log.fatal  "BannerSamlAuthenticationProvider.authenticate ecountered an ValidationException $e"
+            log.error  "BannerSamlAuthenticationProvider.authenticate ecountered an ValidationException $e"
             throw new AuthenticationServiceException("Error validating SAML message signature", e)
         } catch (org.opensaml.xml.security.SecurityException e) {
-            log.fatal  "BannerSamlAuthenticationProvider.authenticate ecountered an SecurityException $e"
+            log.error  "BannerSamlAuthenticationProvider.authenticate ecountered an SecurityException $e"
             throw new AuthenticationServiceException("Error validating SAML message signature", e)
         } catch (DecryptionException e) {
-            log.fatal "BannerSamlAuthenticationProvider.authenticate ecountered an DecryptionException $e"
+            log.error "BannerSamlAuthenticationProvider.authenticate ecountered an DecryptionException $e"
             throw new AuthenticationServiceException("Error decrypting SAML message", e)
         }
 
@@ -100,7 +100,7 @@ class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
         }
 
         if(assertAttributeValue == null ) {
-            log.fatal("System is configured for SAML authentication and identity assertion is $authenticationAssertionAttribute is null")  // NULL
+            log.error("System is configured for SAML authentication and identity assertion is $authenticationAssertionAttribute is null")  // NULL
             throw new UsernameNotFoundException("System is configured for SAML authentication and identity assertion $authenticationAssertionAttribute is null")
         }
 
