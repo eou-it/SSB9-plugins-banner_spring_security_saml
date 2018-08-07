@@ -63,7 +63,9 @@ Brief summary/description of the plugin.
     Closure doWithSpring() { {->
         // TODO Implement runtime spring config (optional)
         def conf = SpringSecurityUtils.securityConfig
-
+        println "**********************************In banner SAML conf ********************************************"
+        println conf.saml
+        println "*****************************************  **********************************************************"
         if (!conf || !conf.saml.active) {
             return
         }
