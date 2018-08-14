@@ -1,6 +1,7 @@
 package banner.spring.security.saml
 
 import grails.plugin.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.web.GrailsSecurityFilterChain
 import grails.plugins.Plugin
 import grails.util.Holders
 import net.hedtech.banner.controllers.ControllerUtils
@@ -133,23 +134,23 @@ Brief summary/description of the plugin.
 
         // Define the spring security filters
         def authenticationProvider = Holders?.config?.banner.sso.authenticationProvider
-        LinkedHashMap filterChain = new LinkedHashMap()
+        List<Map<String, ?>> filterChains = []
         switch (authenticationProvider) {
             case 'saml':
-                filterChain['/**/api/**'] = 'statelessSecurityContextPersistenceFilter,bannerMepCodeFilter,authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor'
-                filterChain['/**/qapi/**'] = 'statelessSecurityContextPersistenceFilter,bannerMepCodeFilter,authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor'
-                filterChain['/**'] = 'samlSessionFilter,securityContextPersistenceFilter,bannerMepCodeFilter,samlEntryPoint,metadataFilter,samlProcessingFilter,samlLogoutFilter,samlLogoutProcessingFilter,logoutFilter,authenticationProcessingFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor'
+                filterChains << [pattern: '/**/api/**',   filters: 'statelessSecurityContextPersistenceFilter,bannerMepCodeFilter,authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor']
+                filterChains << [pattern: '/**/qapi/**',  filters: 'statelessSecurityContextPersistenceFilter,bannerMepCodeFilter,authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor']
+                filterChains << [pattern: '/**',          filters: 'samlSessionFilter,securityContextPersistenceFilter,bannerMepCodeFilter,samlEntryPoint,metadataFilter,samlProcessingFilter,samlLogoutFilter,samlLogoutProcessingFilter,logoutFilter,authenticationProcessingFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor']
+
                 break
             default:
                 break
         }
-
-        List<SecurityFilterChain> chains = new ArrayList<SecurityFilterChain>()
-        filterChain.each { key, value ->
-            def filters = value.toString().split(',').collect {
-              name -> applicationContext.getBean(name)
-            }
-            chains.add(new DefaultSecurityFilterChain(new AntPathRequestMatcher(key), filters))
+        List<GrailsSecurityFilterChain> chains = new ArrayList<GrailsSecurityFilterChain>()
+        for (Map<String, ?> entry in filterChains) {
+            println " FilterChains Entry in SAML === " + entry
+            String value = (entry.filters ?: '').toString().trim()
+            List<Filter> filters = value.toString().split(',').collect { String name -> applicationContext.getBean(name, Filter) }
+            chains << new GrailsSecurityFilterChain(entry.pattern as String, filters)
         }
         applicationContext.springSecurityFilterChain.filterChains = chains
     }
