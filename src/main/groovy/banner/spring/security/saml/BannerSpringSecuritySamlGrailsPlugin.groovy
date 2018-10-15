@@ -19,10 +19,12 @@ class BannerSpringSecuritySamlGrailsPlugin extends Plugin {
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "3.3.2 > *"
     List loadAfter = ['bannerCore','bannerGeneralUtility','springSecuritySaml']
+   // List LoadBefore = ['springSecurityCore']
     def dependsOn = [
             bannerCore: '9.28.1 => *',
-            springSecuritySaml: '3.3.0 => *',
-            bannerGeneralUtility:'9.28.1 => *'
+            bannerGeneralUtility:'9.28.1 => *',
+            springSecuritySaml: '3.3.0 => *'
+
     ]
 
     // resources that are excluded from plugin packaging
@@ -67,7 +69,11 @@ Brief summary/description of the plugin.
         println "**********************************In banner SAML conf ********************************************"
         println conf.saml
         println "*****************************************  **********************************************************"
-        if (!conf || !conf.saml.active) {
+        /*if (!conf || !conf.saml.active) {
+            return
+        }*/
+
+        if(Holders.config.banner?.sso?.authenticationProvider == 'default' || (Holders.config.banner?.sso?.authenticationProvider == 'saml' && !conf.saml.active )){
             return
         }
 
@@ -80,7 +86,8 @@ Brief summary/description of the plugin.
         }
 
         bannerSamlAuthenticationFailureHandler(BannerSamlAuthenticationFailureHandler){
-            defaultFailureUrl = conf.failureHandler.defaultFailureUrl
+            //defaultFailureUrl = conf.failureHandler.defaultFailureUrl
+            defaultFailureUrl = Holders.config.banner?.sso?.grails?.plugin?.springsecurity?.failureHandler.defaultFailureUrl
         }
 
         samlProcessingFilter(SAMLProcessingFilter) {
@@ -116,7 +123,11 @@ Brief summary/description of the plugin.
         // TODO Implement post initialization spring config (optional)
         // build providers list here to give dependent plugins a chance to register some
         def conf = SpringSecurityUtils.securityConfig
-        if (!conf || !conf.saml.active) {
+        /*if (!conf || !conf.saml.active) {
+            return
+        }*/
+
+        if(Holders.config.banner?.sso?.authenticationProvider == 'default' || (Holders.config.banner?.sso?.authenticationProvider == 'saml' && !conf.saml.active )){
             return
         }
 
