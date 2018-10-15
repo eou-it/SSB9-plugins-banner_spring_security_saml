@@ -73,7 +73,7 @@ Brief summary/description of the plugin.
             return
         }*/
 
-        if(Holders.config.banner?.sso?.authenticationProvider == 'default' || (Holders.config.banner?.sso?.authenticationProvider == 'saml' && !conf.saml.active )){
+        if(Holders.config.banner?.sso?.authenticationProvider == 'default' || (Holders.config.banner?.sso?.authenticationProvider == 'cas') || (Holders.config.banner?.sso?.authenticationProvider == 'saml' && !conf.saml.active )){
             return
         }
 
@@ -127,7 +127,7 @@ Brief summary/description of the plugin.
             return
         }*/
 
-        if(Holders.config.banner?.sso?.authenticationProvider == 'default' || (Holders.config.banner?.sso?.authenticationProvider == 'saml' && !conf.saml.active )){
+        if(Holders.config.banner?.sso?.authenticationProvider == 'default' || (Holders.config.banner?.sso?.authenticationProvider == 'cas') ||  (Holders.config.banner?.sso?.authenticationProvider == 'saml' && !conf.saml.active )){
             return
         }
 
