@@ -15,7 +15,6 @@ import javax.servlet.Filter
 
 class BannerSpringSecuritySamlGrailsPlugin extends Plugin {
 
-    def version = "9.27"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "3.3.2 > *"
     List loadAfter = ['bannerCore','bannerGeneralUtility','springSecuritySaml']

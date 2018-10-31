@@ -9,7 +9,7 @@ buildscript {
     }
 }
 
-version "9.28"
+version "9.30"
 group "banner.spring.security.saml"
 
 apply plugin:"eclipse"
