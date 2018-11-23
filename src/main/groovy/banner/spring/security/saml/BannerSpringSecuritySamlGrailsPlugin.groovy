@@ -9,6 +9,7 @@ import net.hedtech.banner.security.*
 import org.springframework.security.saml.*
 import org.springframework.security.web.DefaultSecurityFilterChain
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.security.web.util.matcher.RequestMatcher
 import javax.servlet.Filter
@@ -17,11 +18,11 @@ class BannerSpringSecuritySamlGrailsPlugin extends Plugin {
 
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "3.3.2 > *"
-    List loadAfter = ['bannerCore','bannerGeneralUtility','springSecuritySaml']
+    List loadAfter = ['bannerCore', 'bannerGeneralUtility', 'springSecuritySaml']
     def dependsOn = [
-            bannerCore: '9.28.1 => *',
-            bannerGeneralUtility:'9.28.1 => *',
-            springSecuritySaml: '3.3.0 => *'
+            bannerCore          : '9.28.1 => *',
+            bannerGeneralUtility: '9.28.1 => *',
+            springSecuritySaml  : '3.3.0 => *'
 
     ]
 
@@ -42,71 +43,59 @@ Brief summary/description of the plugin.
     // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/banner-spring-security-saml"
 
+    Closure doWithSpring() {
+        { ->
+            // TODO Implement runtime spring config (optional)
+            def conf = SpringSecurityUtils.securityConfig
+            println "**********************************In banner SAML conf ********************************************"
+            println conf.saml
+            println "*****************************************  **********************************************************"
 
-    //TODO:: doWithWebDescriptor method signature is changed and need to modify this.
-    /*
-    def doWithWebDescriptor = { xml ->
-        def conf = SpringSecurityUtils.securityConfig
-        if (!conf || !conf.saml.active) {
-            return
-        }
-
-        def listenerElements = xml.'listener'[0]
-        listenerElements + {
-            'listener' {
-                'display-name'("Http Session Listener")
-                'listener-class'("net.hedtech.banner.security.SessionCounterListener")
+            if (Holders.config.banner?.sso?.authenticationProvider == 'default' || (Holders.config.banner?.sso?.authenticationProvider == 'cas') || (Holders.config.banner?.sso?.authenticationProvider == 'saml' && !conf.saml.active)) {
+                //TODO change or remove this below code as now the Open SAML Plugin is executing by default so when the code in Open SAML plugin is change we can remove this
+                if (Holders.config.banner?.sso?.authenticationProvider == 'default') {
+                    logoutSuccessHandler(SimpleUrlLogoutSuccessHandler) {
+                        defaultTargetUrl = Holders.config.grails.plugin.springsecurity.logout.afterLogoutUrl
+                    }
+                }
+                return
             }
+
+            println '\nConfiguring Banner Spring Security SAML ...'
+
+            samlAuthenticationProvider(BannerSamlAuthenticationProvider) {
+                userDetails = ref('userDetailsService')
+                hokConsumer = ref('webSSOprofileConsumer')
+                dataSource = ref(dataSource)
+            }
+
+            bannerSamlAuthenticationFailureHandler(BannerSamlAuthenticationFailureHandler) {
+                defaultFailureUrl = Holders.config.banner?.sso?.grails?.plugin?.springsecurity?.failureHandler.defaultFailureUrl
+            }
+
+            samlProcessingFilter(SAMLProcessingFilter) {
+                authenticationManager = ref('authenticationManager')
+                authenticationSuccessHandler = ref('successRedirectHandler')
+                sessionAuthenticationStrategy = ref('sessionFixationProtectionStrategy')
+                authenticationFailureHandler = ref('bannerSamlAuthenticationFailureHandler')
+            }
+
+            samlLogoutFilter(BannerSamlLogoutFilter,
+                    ref('logoutSuccessHandler'), ref('logoutHandler'), ref('logoutHandler'))
+
+            samlSessionRegistry(BannerSamlSessionRegistryImpl)
+
+            samlSessionFilter(BannerSamlSessionFilter) {
+                sessionRegistry = ref("samlSessionRegistry")
+                contextProvider = ref("contextProvider")
+            }
+            successRedirectHandler(BannerSamlSavedRequestAwareAuthenticationSuccessHandler) {
+                alwaysUseDefaultTargetUrl = conf.saml.alwaysUseAfterLoginUrl ?: false
+                defaultTargetUrl = conf.saml.afterLoginUrl
+                sessionRegistry = ref("samlSessionRegistry")
+            }
+            println '...finished configuring Banner Spring Security SAML\n'
         }
-    }
-    */
-
-    Closure doWithSpring() { {->
-        // TODO Implement runtime spring config (optional)
-        def conf = SpringSecurityUtils.securityConfig
-        println "**********************************In banner SAML conf ********************************************"
-        println conf.saml
-        println "*****************************************  **********************************************************"
-
-        if(Holders.config.banner?.sso?.authenticationProvider == 'default' || (Holders.config.banner?.sso?.authenticationProvider == 'cas') || (Holders.config.banner?.sso?.authenticationProvider == 'saml' && !conf.saml.active )){
-            return
-        }
-
-        println '\nConfiguring Banner Spring Security SAML ...'
-
-        samlAuthenticationProvider(BannerSamlAuthenticationProvider) {
-            userDetails = ref('userDetailsService')
-            hokConsumer = ref('webSSOprofileConsumer')
-            dataSource = ref(dataSource)
-        }
-
-        bannerSamlAuthenticationFailureHandler(BannerSamlAuthenticationFailureHandler){
-            defaultFailureUrl = Holders.config.banner?.sso?.grails?.plugin?.springsecurity?.failureHandler.defaultFailureUrl
-        }
-
-        samlProcessingFilter(SAMLProcessingFilter) {
-            authenticationManager = ref('authenticationManager')
-            authenticationSuccessHandler = ref('successRedirectHandler')
-            sessionAuthenticationStrategy = ref('sessionFixationProtectionStrategy')
-            authenticationFailureHandler = ref('bannerSamlAuthenticationFailureHandler')
-        }
-
-        samlLogoutFilter(BannerSamlLogoutFilter,
-                ref('logoutSuccessHandler'), ref('logoutHandler'), ref('logoutHandler'))
-
-        samlSessionRegistry(BannerSamlSessionRegistryImpl)
-
-        samlSessionFilter(BannerSamlSessionFilter){
-            sessionRegistry = ref("samlSessionRegistry")
-            contextProvider=ref("contextProvider")
-        }
-        successRedirectHandler(BannerSamlSavedRequestAwareAuthenticationSuccessHandler) {
-            alwaysUseDefaultTargetUrl = conf.saml.alwaysUseAfterLoginUrl ?: false
-            defaultTargetUrl = conf.saml.afterLoginUrl
-            sessionRegistry = ref("samlSessionRegistry")
-        }
-        println '...finished configuring Banner Spring Security SAML\n'
-    }
     }
 
     void doWithDynamicMethods() {
@@ -118,7 +107,7 @@ Brief summary/description of the plugin.
         // build providers list here to give dependent plugins a chance to register some
         def conf = SpringSecurityUtils.securityConfig
 
-        if(Holders.config.banner?.sso?.authenticationProvider == 'default' || (Holders.config.banner?.sso?.authenticationProvider == 'cas') ||  (Holders.config.banner?.sso?.authenticationProvider == 'saml' && !conf.saml.active )){
+        if (Holders.config.banner?.sso?.authenticationProvider == 'default' || (Holders.config.banner?.sso?.authenticationProvider == 'cas') || (Holders.config.banner?.sso?.authenticationProvider == 'saml' && !conf.saml.active)) {
             return
         }
 
@@ -126,8 +115,8 @@ Brief summary/description of the plugin.
         if (conf.providerNames) {
             providerNames.addAll conf.providerNames
         } else {
-            if(ControllerUtils.isGuestAuthenticationEnabled()){
-                providerNames = ['samlAuthenticationProvider','selfServiceBannerAuthenticationProvider','bannerAuthenticationProvider']
+            if (ControllerUtils.isGuestAuthenticationEnabled()) {
+                providerNames = ['samlAuthenticationProvider', 'selfServiceBannerAuthenticationProvider', 'bannerAuthenticationProvider']
             } else {
                 providerNames = ['samlAuthenticationProvider']
             }
@@ -139,9 +128,9 @@ Brief summary/description of the plugin.
         List<Map<String, ?>> filterChains = []
         switch (authenticationProvider) {
             case 'saml':
-                filterChains << [pattern: '/**/api/**',   filters: 'statelessSecurityContextPersistenceFilter,bannerMepCodeFilter,authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor']
-                filterChains << [pattern: '/**/qapi/**',  filters: 'statelessSecurityContextPersistenceFilter,bannerMepCodeFilter,authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor']
-                filterChains << [pattern: '/**',          filters: 'samlSessionFilter,securityContextPersistenceFilter,bannerMepCodeFilter,samlEntryPoint,metadataFilter,samlProcessingFilter,samlLogoutFilter,samlLogoutProcessingFilter,logoutFilter,authenticationProcessingFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor']
+                filterChains << [pattern: '/**/api/**', filters: 'statelessSecurityContextPersistenceFilter,bannerMepCodeFilter,authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor']
+                filterChains << [pattern: '/**/qapi/**', filters: 'statelessSecurityContextPersistenceFilter,bannerMepCodeFilter,authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor']
+                filterChains << [pattern: '/**', filters: 'samlSessionFilter,securityContextPersistenceFilter,bannerMepCodeFilter,samlEntryPoint,metadataFilter,samlProcessingFilter,samlLogoutFilter,samlLogoutProcessingFilter,logoutFilter,authenticationProcessingFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor']
 
                 break
             default:
