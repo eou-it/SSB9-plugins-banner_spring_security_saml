@@ -3,7 +3,7 @@ package banner.spring.security.saml
 class UrlMappings {
 
     static mappings = {
-        "/$controller/$action?/$id?(.$format)?"{
+        "/ssb/$controller/$action?/$id?(.$format)?"{
             constraints {
                 // apply constraints here
             }
