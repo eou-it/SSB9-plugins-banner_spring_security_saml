@@ -60,14 +60,8 @@ Brief summary/description of the plugin.
                 dataSource = ref(dataSource)
             }
 
-            def failureHandlerUrl = Holders.config.banner?.sso?.grails?.plugin?.springsecurity?.failureHandler?.defaultFailureUrl
-            if(failureHandlerUrl == new TreeMap()){
-                failureHandlerUrl = Holders.config.grails?.plugin?.springsecurity?.failureHandler?.defaultFailureUrl
-            }
-
-
             bannerSamlAuthenticationFailureHandler(BannerSamlAuthenticationFailureHandler) {
-                defaultFailureUrl = failureHandlerUrl
+                defaultFailureUrl = Holders.config.grails?.plugin?.springsecurity?.failureHandler?.defaultFailureUrl
             }
 
             samlProcessingFilter(SAMLProcessingFilter) {
