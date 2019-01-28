@@ -45,7 +45,7 @@ Brief summary/description of the plugin.
             // TODO Implement runtime spring config (optional)
             def conf = SpringSecurityUtils.securityConfig
             if (Holders.config.banner?.sso?.authenticationProvider == 'default' || (Holders.config.banner?.sso?.authenticationProvider == 'cas') || (Holders.config.banner?.sso?.authenticationProvider == 'saml' && !conf.saml.active)) {
-                //TODO change or remove this below code as now the Open SAML Plugin is executing by default so when the code in Open SAML plugin is change we can remove this
+                // Change or remove this below code as now the Open SAML Plugin is executing by default so when the code in Open SAML plugin is change we can remove this
                 logoutSuccessHandler(SimpleUrlLogoutSuccessHandler) {
                     defaultTargetUrl = Holders.config.grails.plugin.springsecurity.logout.afterLogoutUrl
                 }
