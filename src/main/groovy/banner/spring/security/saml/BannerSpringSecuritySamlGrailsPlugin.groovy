@@ -6,12 +6,9 @@ import grails.plugins.Plugin
 import grails.util.Holders
 import net.hedtech.banner.controllers.ControllerUtils
 import net.hedtech.banner.security.*
-import org.springframework.security.saml.*
-import org.springframework.security.web.DefaultSecurityFilterChain
-import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.saml.SAMLProcessingFilter
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher
-import org.springframework.security.web.util.matcher.RequestMatcher
+
 import javax.servlet.Filter
 
 class BannerSpringSecuritySamlGrailsPlugin extends Plugin {
@@ -47,12 +44,8 @@ Brief summary/description of the plugin.
         { ->
             // TODO Implement runtime spring config (optional)
             def conf = SpringSecurityUtils.securityConfig
-            println "**********************************In banner SAML conf ********************************************"
-            println conf.saml
-            println "*****************************************  **********************************************************"
-
             if (Holders.config.banner?.sso?.authenticationProvider == 'default' || (Holders.config.banner?.sso?.authenticationProvider == 'cas') || (Holders.config.banner?.sso?.authenticationProvider == 'saml' && !conf.saml.active)) {
-                //TODO change or remove this below code as now the Open SAML Plugin is executing by default so when the code in Open SAML plugin is change we can remove this
+                // Change or remove this below code as now the Open SAML Plugin is executing by default so when the code in Open SAML plugin is change we can remove this
                 logoutSuccessHandler(SimpleUrlLogoutSuccessHandler) {
                     defaultTargetUrl = Holders.config.grails.plugin.springsecurity.logout.afterLogoutUrl
                 }
@@ -68,7 +61,7 @@ Brief summary/description of the plugin.
             }
 
             bannerSamlAuthenticationFailureHandler(BannerSamlAuthenticationFailureHandler) {
-                defaultFailureUrl = Holders.config.banner?.sso?.grails?.plugin?.springsecurity?.failureHandler.defaultFailureUrl
+                defaultFailureUrl = Holders.config.grails?.plugin?.springsecurity?.failureHandler?.defaultFailureUrl
             }
 
             samlProcessingFilter(SAMLProcessingFilter) {
@@ -136,7 +129,6 @@ Brief summary/description of the plugin.
         }
         List<GrailsSecurityFilterChain> chains = new ArrayList<GrailsSecurityFilterChain>()
         for (Map<String, ?> entry in filterChains) {
-            println " FilterChains Entry in SAML === " + entry
             String value = (entry.filters ?: '').toString().trim()
             List<Filter> filters = value.toString().split(',').collect { String name -> applicationContext.getBean(name, Filter) }
             chains << new GrailsSecurityFilterChain(entry.pattern as String, filters)
