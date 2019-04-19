@@ -5,6 +5,7 @@ package net.hedtech.banner.security
 
 import grails.util.Holders
 import groovy.util.logging.Slf4j
+import net.hedtech.banner.general.audit.LoginAuditService
 import org.opensaml.saml2.core.impl.AuthnStatementImpl
 import org.opensaml.common.SAMLException
 import org.opensaml.common.SAMLRuntimeException
@@ -28,6 +29,7 @@ import org.springframework.web.context.request.RequestContextHolder as RCH
 @Slf4j
 class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
     def dataSource
+    def loginAuditService = new LoginAuditService()
     // note: using 'getClass()' here doesn't work
 
 
@@ -105,7 +107,12 @@ class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
         }
 
         def dbUser = AuthenticationProviderUtility.getMappedUserForUdcId( assertAttributeValue, dataSource )
+
         log.debug "BannerSamlAuthenticationProvider.authenticate found Oracle database user $dbUser for assertAttributeValue"
+        if(dbUser!= null && Holders.config.EnableLoginAudit == "Y"){
+            String loginComment = "Login successful."
+            loginAuditService.createLoginLogoutAudit(dbUser,loginComment)
+        }
 
         // Next, we'll verify the authenticationResults (and throw appropriate exceptions for expired pin, disabled account, etc.)
         AuthenticationProviderUtility.verifyAuthenticationResults this, authentication, dbUser
