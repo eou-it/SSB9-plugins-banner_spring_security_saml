@@ -29,7 +29,7 @@ import org.springframework.web.context.request.RequestContextHolder as RCH
 @Slf4j
 class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
     def dataSource
-    def loginAuditService = new LoginAuditService()
+    def loginAuditService
     // note: using 'getClass()' here doesn't work
 
 
@@ -109,8 +109,11 @@ class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
         def dbUser = AuthenticationProviderUtility.getMappedUserForUdcId( assertAttributeValue, dataSource )
 
         log.debug "BannerSamlAuthenticationProvider.authenticate found Oracle database user $dbUser for assertAttributeValue"
-        if(dbUser!= null && Holders.config.EnableLoginAudit == "Y"){
-            String loginComment = "Login successful."
+        if(dbUser!= null && (Holders.config.EnableLoginAudit)?.equalsIgnoreCase('Y')){
+            if (!loginAuditService) {
+                loginAuditService = Holders.grailsApplication.mainContext.getBean("loginAuditService")
+            }
+            String loginComment = "Login successful"
             loginAuditService.createLoginLogoutAudit(dbUser,loginComment)
         }
 
