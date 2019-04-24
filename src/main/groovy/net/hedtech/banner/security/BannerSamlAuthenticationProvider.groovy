@@ -109,7 +109,9 @@ class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
         def dbUser = AuthenticationProviderUtility.getMappedUserForUdcId( assertAttributeValue, dataSource )
 
         log.debug "BannerSamlAuthenticationProvider.authenticate found Oracle database user $dbUser for assertAttributeValue"
-        if(dbUser!= null && (Holders.config.EnableLoginAudit)?.equalsIgnoreCase('Y')){
+
+        String loginAuditConfiguration = AuthenticationProviderUtility.getLoginAuditConfiguration()
+        if(dbUser!= null && loginAuditConfiguration?.equalsIgnoreCase('Y')){
             if (!loginAuditService) {
                 loginAuditService = Holders.grailsApplication.mainContext.getBean("loginAuditService")
             }
