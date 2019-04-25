@@ -5,6 +5,7 @@ import grails.plugin.springsecurity.web.GrailsSecurityFilterChain
 import grails.plugins.Plugin
 import grails.util.Holders
 import net.hedtech.banner.controllers.ControllerUtils
+import net.hedtech.banner.general.audit.LoginAuditService
 import net.hedtech.banner.security.*
 import org.springframework.security.saml.SAMLProcessingFilter
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler
@@ -58,6 +59,7 @@ Brief summary/description of the plugin.
                 userDetails = ref('userDetailsService')
                 hokConsumer = ref('webSSOprofileConsumer')
                 dataSource = ref(dataSource)
+                loginAuditService = ref(loginAuditService)
             }
 
             bannerSamlAuthenticationFailureHandler(BannerSamlAuthenticationFailureHandler) {
