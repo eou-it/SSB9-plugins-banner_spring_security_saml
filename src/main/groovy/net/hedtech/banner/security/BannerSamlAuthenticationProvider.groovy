@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2009-2017 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.security
 
@@ -116,7 +116,7 @@ class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
                 loginAuditService = Holders.grailsApplication.mainContext.getBean("loginAuditService")
             }
             String loginComment = "Login successful"
-            loginAuditService.createLoginLogoutAudit(dbUser,loginComment)
+            loginAuditService.createLoginLogoutAudit(dbUser?.name, dbUser?.pidm, loginComment)
         }
 
         // Next, we'll verify the authenticationResults (and throw appropriate exceptions for expired pin, disabled account, etc.)
