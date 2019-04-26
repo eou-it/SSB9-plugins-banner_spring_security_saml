@@ -30,8 +30,6 @@ import org.springframework.web.context.request.RequestContextHolder as RCH
 class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
     def dataSource
     def loginAuditService
-    // note: using 'getClass()' here doesn't work
-
 
     public BannerSamlAuthenticationProvider() {
         super();
