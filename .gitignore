@@ -16,3 +16,14 @@ web-app/
 .idea
 /grails-app/conf/mavenInfo.groovy
 cobertura.ser
+**-rtl.css
+plugin.xml
+build/
+.gradle/**/*
+*.log
+*.iws
+*.ipr
+*.iml
+.idea
+gradle/**/*
+gradle/wrapper/*

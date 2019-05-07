@@ -1,0 +1,11 @@
+include ':banner-core'
+project(':banner-core').projectDir = new File('../banner_core.git')
+
+include ':i18n-core'
+project(':i18n-core').projectDir = new File('../i18n_core.git')
+
+include ':grails-constraints'
+project(':grails-constraints').projectDir = new File('../grails_constraints.git')
+
+include ':banner-codenarc'
+project(':banner-codenarc').projectDir = new File('../banner_codenarc.git')
