@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2009-2017 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.security
 
@@ -30,8 +30,6 @@ import org.springframework.web.context.request.RequestContextHolder as RCH
 class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
     def dataSource
     def loginAuditService
-    // note: using 'getClass()' here doesn't work
-
 
     public BannerSamlAuthenticationProvider() {
         super();
@@ -116,7 +114,7 @@ class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
                 loginAuditService = Holders.grailsApplication.mainContext.getBean("loginAuditService")
             }
             String loginComment = "Login successful"
-            loginAuditService.createLoginLogoutAudit(dbUser,loginComment)
+            loginAuditService.createLoginLogoutAudit(dbUser?.name, dbUser?.pidm, loginComment)
         }
 
         // Next, we'll verify the authenticationResults (and throw appropriate exceptions for expired pin, disabled account, etc.)

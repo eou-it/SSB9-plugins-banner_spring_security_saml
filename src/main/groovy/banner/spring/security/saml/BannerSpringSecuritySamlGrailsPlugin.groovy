@@ -55,6 +55,8 @@ Brief summary/description of the plugin.
 
             println '\nConfiguring Banner Spring Security SAML ...'
 
+            loginAuditService(LoginAuditService)
+
             samlAuthenticationProvider(BannerSamlAuthenticationProvider) {
                 userDetails = ref('userDetailsService')
                 hokConsumer = ref('webSSOprofileConsumer')
