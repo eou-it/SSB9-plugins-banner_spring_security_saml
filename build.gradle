@@ -132,3 +132,16 @@ bootRepackage.enabled = false
 assets {
     packagePlugin = true
 }
+
+apply plugin: 'codenarc'
+dependencies {
+    //testRuntime "org.slf4j:slf4j-log4j12:1.7.5"
+    //testRuntime "log4j:log4j:1.2.17"
+}
+codenarc {
+    def codenarcRulePath = project(":banner-codenarc").projectDir.absolutePath + "/config/codenarc/rules.groovy"
+    configFile = file(codenarcRulePath)
+    maxPriority1Violations = Integer.MAX_VALUE
+    maxPriority2Violations = Integer.MAX_VALUE
+    maxPriority3Violations = Integer.MAX_VALUE
+}
