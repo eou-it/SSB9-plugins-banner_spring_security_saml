@@ -3,6 +3,8 @@
  *******************************************************************************/
 package net.hedtech.banner.security
 
+import grails.gorm.transactions.Rollback
+import grails.testing.mixin.integration.Integration
 import grails.util.Holders
 import groovy.sql.Sql
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -19,6 +21,8 @@ import org.springframework.security.web.WebAttributes
 /**
  * Integration test cases for BannerSamlAuthenticationFailureHandler.
  */
+@Integration
+@Rollback
 class BannerSamlAuthenticationFailureHandlerIntegrationTests extends BaseIntegrationTestCase {
     BannerSamlAuthenticationFailureHandler bannerSamlAuthenticationFailureHandler
     GrailsMockHttpServletRequest request
