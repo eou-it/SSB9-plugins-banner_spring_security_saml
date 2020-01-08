@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2016  Ellucian Company L.P. and its affiliates.
+ Copyright 2016-2020  Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.security
 
@@ -16,15 +16,13 @@ import javax.servlet.http.HttpServletResponse
 @Slf4j
 class BannerSamlAuthenticationFailureHandler extends  SimpleUrlAuthenticationFailureHandler{
 
-
-
     void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
 
         def msg = request.session.getAttribute("msg")
         def module = request.session.getAttribute("module")
         def authName = request.session.getAttribute("auth_name")
 
-        log.info "BannerCasAuthenticationFailureHandler invoked for ${authName}"
+        log.info "BannerSamlAuthenticationFailureHandler invoked for ${authName}"
 
         super.onAuthenticationFailure(request, response, e);
 
