@@ -13,7 +13,6 @@ import org.opensaml.xml.encryption.DecryptionException
 import org.opensaml.xml.schema.XSAny
 import org.opensaml.xml.validation.ValidationException
 import org.springframework.security.authentication.AuthenticationServiceException
-import org.springframework.security.authentication.LockedException
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
