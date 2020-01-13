@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2009-2019 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2020 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.security
 
@@ -90,7 +90,7 @@ class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
             if(attribute.name == authenticationAssertionAttribute) {
                 //assertAttributeValue = attribute.attributeValues.get(0).getValue()
                 assertAttributeValue = getAttributeValue(attribute.attributeValues.get(0))
-                log.debug  "BannerSamlAuthenticationProvider.authenticate found assertAttributeValue $assertAttributeValue"
+                log.debug "BannerSamlAuthenticationProvider.authenticate found assertAttributeValue $assertAttributeValue"
             } else {
                 //def value = attribute.attributeValues.get(0).getValue()
                 def value = getAttributeValue(attribute.attributeValues.get(0))
@@ -105,6 +105,10 @@ class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
         }
 
         def dbUser = AuthenticationProviderUtility.getMappedUserForUdcId( assertAttributeValue, dataSource )
+        if (dbUser?.locked){
+            String user =  RCH.currentRequestAttributes().request.session.getAttribute('auth_name')
+            log.debug "BannerSamlAuthenticationProvider was not able to authenticate user=$user is Locked."
+        }
 
         log.debug "BannerSamlAuthenticationProvider.authenticate found Oracle database user $dbUser for assertAttributeValue"
 
