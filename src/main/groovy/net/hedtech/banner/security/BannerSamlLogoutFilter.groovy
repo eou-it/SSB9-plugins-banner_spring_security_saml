@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2009-2014 Ellucian Company L.P. and its affiliates.
+ Copyright 2009-2020 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.security
 
@@ -118,10 +118,10 @@ class BannerSamlLogoutFilter extends LogoutFilter {
      * @param request request used to determine whether to enable this filter
      * @return true if this filter should be used
      */
-   /* @Override
+   @Override
     protected boolean requiresLogout(HttpServletRequest request, HttpServletResponse response) {
-        return requiresLogout
-    }*/
+        return SAMLUtil.processFilter(FILTER_URL, request)
+    }
 
     /**
      * Performs global logout in case current user logged in using SAML and user hasn't selected local logout only
