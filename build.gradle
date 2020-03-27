@@ -63,6 +63,7 @@ dependencies {
     //Added for BannerXE Spring security SAML Plugin dependency
     compile ("org.grails.plugins:spring-security-saml:3.3.0"){
         exclude group:"org.bouncycastle", module:"bcprov-jdk15"
+        exclude group:"org.bouncycastle", module:"bcprov-jdk15on"
         exclude module: "xmltooling"
     }
     compile ('org.bouncycastle:bcprov-jdk15on:1.59')
@@ -91,8 +92,7 @@ dependencies {
         exclude module: "xmlunit"
     }
 
-
-    compile("org.owasp.esapi:esapi:2.1.0.1") {
+    compile("org.owasp.esapi:esapi:2.2.0.0") {
         exclude module: "commons-fileupload"
         exclude module: "antisamy"
         exclude module: "bsh-core"
