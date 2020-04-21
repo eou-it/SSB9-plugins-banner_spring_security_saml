@@ -5,12 +5,12 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.14.2"
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.15.1"
         classpath "net.saliman:gradle-cobertura-plugin:2.6.0"
     }
 }
 
-version "9.33.1"
+version "9.33.3"
 group "banner.spring.security.saml"
 
 apply plugin:"eclipse"
@@ -54,7 +54,7 @@ dependencies {
     profile "org.grails.profiles:web-plugin"
     provided "org.grails:grails-plugin-services"
     provided "org.grails:grails-plugin-domain-class"
-    runtime "com.bertramlabs.plugins:asset-pipeline-grails:2.14.2"
+    runtime "com.bertramlabs.plugins:asset-pipeline-grails:3.0.6"
     testCompile "org.grails:grails-gorm-testing-support"
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails:grails-web-testing-support"
@@ -63,9 +63,10 @@ dependencies {
     //Added for BannerXE Spring security SAML Plugin dependency
     compile ("org.grails.plugins:spring-security-saml:3.3.0"){
         exclude group:"org.bouncycastle", module:"bcprov-jdk15"
+        exclude group:"org.bouncycastle", module:"bcprov-jdk15on"
         exclude module: "xmltooling"
     }
-    compile ('org.bouncycastle:bcprov-jdk15on:1.59')
+    compile ('org.bouncycastle:bcprov-jdk15on:1.60')
 
     compile("org.opensaml:openws:1.4.4") {
         exclude module: "commons-codec"
@@ -91,8 +92,7 @@ dependencies {
         exclude module: "xmlunit"
     }
 
-
-    compile("org.owasp.esapi:esapi:2.1.0.1") {
+    compile("org.owasp.esapi:esapi:2.2.0.0") {
         exclude module: "commons-fileupload"
         exclude module: "antisamy"
         exclude module: "bsh-core"
@@ -112,6 +112,12 @@ dependencies {
     //Added for SAML
     compile "org.springframework.boot:spring-boot-starter-security:"
 
+}
+
+configurations {
+    runtime.exclude group: "org.springframework.boot", module: "spring-boot-starter-actuator"
+    runtime.exclude group: "org.grails", module: "grails-gorm-testing-support"
+    runtime.exclude group: "log4j", module: "log4j"
 }
 
 // Added for BannerXE - Internal plugin dependency
