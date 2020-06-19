@@ -10,7 +10,7 @@ buildscript {
     }
 }
 
-version "9.33.3"
+version "9.34"
 group "banner.spring.security.saml"
 
 apply plugin:"eclipse"
@@ -25,7 +25,7 @@ repositories {
     mavenLocal()
     maven { url "https://repo.grails.org/grails/core" }
     //added for Spring Security SAML plugin
-    maven { url "http://central.maven.org/maven2/"}
+    maven { url "https://repo.maven.apache.org/maven2/"}
     maven { url "https://build.shibboleth.net/nexus/content/repositories/releases"}
     maven { url "https://build.shibboleth.net/nexus/content/groups/public/"}
     maven { url "https://code.lds.org/nexus/content/groups/main-repo"}
