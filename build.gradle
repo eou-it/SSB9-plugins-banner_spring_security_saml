@@ -115,7 +115,6 @@ dependencies {
 }
 
 configurations {
-    runtime.exclude group: "org.springframework.boot", module: "spring-boot-starter-actuator"
     runtime.exclude group: "org.grails", module: "grails-gorm-testing-support"
     runtime.exclude group: "log4j", module: "log4j"
 }
