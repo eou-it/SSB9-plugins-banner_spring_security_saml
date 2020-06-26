@@ -151,3 +151,18 @@ codenarc {
     maxPriority2Violations = Integer.MAX_VALUE
     maxPriority3Violations = Integer.MAX_VALUE
 }
+cobertura{
+    coverageFormats = ['xml','html']
+}
+
+integrationTest {
+    ignoreFailures = true
+}
+
+tasks.withType(Test) {
+    testLogging {
+        exceptionFormat "full"
+        events "started", "skipped", "passed", "failed"
+        showStandardStreams false
+    }
+}
