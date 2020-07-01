@@ -110,7 +110,9 @@ class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
             log.debug "BannerSamlAuthenticationProvider was not able to authenticate user=$user is Locked."
         }
 
-        log.debug "BannerSamlAuthenticationProvider.authenticate found Oracle database user $dbUser for assertAttributeValue"
+        def dbUserLog =dbUser.remove('pidm')
+
+        log.debug "BannerSamlAuthenticationProvider.authenticate found Oracle database user $dbUserLog for assertAttributeValue"
 
         String loginAuditConfiguration = AuthenticationProviderUtility.getLoginAuditConfiguration()
         if(dbUser!= null && loginAuditConfiguration?.equalsIgnoreCase('Y')){
