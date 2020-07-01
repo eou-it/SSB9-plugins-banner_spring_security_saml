@@ -110,7 +110,7 @@ class BannerSamlAuthenticationProvider extends SAMLAuthenticationProvider  {
             log.debug "BannerSamlAuthenticationProvider was not able to authenticate user=$user is Locked."
         }
 
-        def dbUserLog =dbUser.remove('pidm')
+        def dbUserLog =dbUser.findAll {it.key != "pidm"}
 
         log.debug "BannerSamlAuthenticationProvider.authenticate found Oracle database user $dbUserLog for assertAttributeValue"
 
