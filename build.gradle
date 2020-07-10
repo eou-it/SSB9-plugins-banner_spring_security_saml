@@ -115,7 +115,6 @@ dependencies {
 }
 
 configurations {
-    runtime.exclude group: "org.springframework.boot", module: "spring-boot-starter-actuator"
     runtime.exclude group: "org.grails", module: "grails-gorm-testing-support"
     runtime.exclude group: "log4j", module: "log4j"
 }
@@ -151,4 +150,19 @@ codenarc {
     maxPriority1Violations = Integer.MAX_VALUE
     maxPriority2Violations = Integer.MAX_VALUE
     maxPriority3Violations = Integer.MAX_VALUE
+}
+cobertura{
+    coverageFormats = ['xml','html']
+}
+
+integrationTest {
+    ignoreFailures = true
+}
+
+tasks.withType(Test) {
+    testLogging {
+        exceptionFormat "full"
+        events "started", "skipped", "passed", "failed"
+        showStandardStreams false
+    }
 }
