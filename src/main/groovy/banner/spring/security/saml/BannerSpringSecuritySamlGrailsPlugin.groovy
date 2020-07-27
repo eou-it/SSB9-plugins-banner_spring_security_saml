@@ -1,6 +1,7 @@
 /* ******************************************************************************
  Copyright 2009-2020 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
+
 package banner.spring.security.saml
 
 import grails.plugin.springsecurity.SpringSecurityUtils
