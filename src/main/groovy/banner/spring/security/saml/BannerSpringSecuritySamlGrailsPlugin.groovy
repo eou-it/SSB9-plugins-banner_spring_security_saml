@@ -1,6 +1,3 @@
-/*******************************************************************************
- Copyright 2020 Ellucian Company L.P. and its affiliates.
- ****************************************************************************** */
 package banner.spring.security.saml
 
 import grails.plugin.springsecurity.SpringSecurityUtils
@@ -59,11 +56,15 @@ Brief summary/description of the plugin.
             println '\nConfiguring Banner Spring Security SAML ...'
 
             loginAuditService(LoginAuditService)
-            webSSOprofileConsumer(WebSSOProfileConsumerImpl){
-                def maxAuthenticationAgeDb = Holders.config.grails.plugin.springsecurity.saml.maxAuthenticationAge
-                WebSSOProfileConsumerImpl webSSOProfileConsumerImpl = new WebSSOProfileConsumerImpl()
-                maxAuthenticationAge = maxAuthenticationAgeDb ? maxAuthenticationAgeDb : webSSOProfileConsumerImpl.maxAuthenticationAge
+
+            def maxAuthenticationAgeFromConfig = Holders.config.grails.plugin.springsecurity.saml.maxAuthenticationAge
+            if(maxAuthenticationAgeFromConfig){
+                webSSOprofileConsumer(WebSSOProfileConsumerImpl){
+                    maxAuthenticationAge = maxAuthenticationAgeFromConfig
+                    println("maxAuthenticationAge: ${maxAuthenticationAge}")
+                }
             }
+
             samlAuthenticationProvider(BannerSamlAuthenticationProvider) {
                 userDetails = ref('userDetailsService')
                 hokConsumer = ref('webSSOprofileConsumer')
