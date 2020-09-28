@@ -61,7 +61,6 @@ Brief summary/description of the plugin.
             if(maxAuthenticationAgeFromConfig){
                 webSSOprofileConsumer(WebSSOProfileConsumerImpl){
                     maxAuthenticationAge = maxAuthenticationAgeFromConfig
-                    println("maxAuthenticationAge: ${maxAuthenticationAge}")
                 }
             }
 
