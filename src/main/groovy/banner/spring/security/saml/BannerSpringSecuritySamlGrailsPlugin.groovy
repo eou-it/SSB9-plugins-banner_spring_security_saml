@@ -57,7 +57,9 @@ Brief summary/description of the plugin.
 
             loginAuditService(LoginAuditService)
             webSSOprofileConsumer(WebSSOProfileConsumerImpl){
-                maxAuthenticationAge = Holders.config.grails.plugin.springsecurity.saml.maxAuthenticationAge
+                def maxAuthenticationAgeDb = Holders.config.grails.plugin.springsecurity.saml.maxAuthenticationAge
+                WebSSOProfileConsumerImpl webSSOProfileConsumerImpl = new WebSSOProfileConsumerImpl()
+                maxAuthenticationAge = maxAuthenticationAgeDb ? maxAuthenticationAgeDb : webSSOProfileConsumerImpl.maxAuthenticationAge
             }
             samlAuthenticationProvider(BannerSamlAuthenticationProvider) {
                 userDetails = ref('userDetailsService')
