@@ -1,3 +1,7 @@
+/* ******************************************************************************
+ Copyright 2009-2020 Ellucian Company L.P. and its affiliates.
+ ****************************************************************************** */
+
 package banner.spring.security.saml
 
 import grails.plugin.springsecurity.SpringSecurityUtils
@@ -9,7 +13,7 @@ import net.hedtech.banner.general.audit.LoginAuditService
 import net.hedtech.banner.security.*
 import org.springframework.security.saml.SAMLProcessingFilter
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler
-
+import org.springframework.security.saml.websso.WebSSOProfileConsumerImpl
 import javax.servlet.Filter
 
 class BannerSpringSecuritySamlGrailsPlugin extends Plugin {
@@ -56,6 +60,13 @@ Brief summary/description of the plugin.
             println '\nConfiguring Banner Spring Security SAML ...'
 
             loginAuditService(LoginAuditService)
+
+            def maxAuthenticationAgeFromConfig = Holders.config.grails.plugin.springsecurity.saml.maxAuthenticationAge
+            if(maxAuthenticationAgeFromConfig){
+                webSSOprofileConsumer(WebSSOProfileConsumerImpl){
+                    maxAuthenticationAge = maxAuthenticationAgeFromConfig
+                }
+            }
 
             samlAuthenticationProvider(BannerSamlAuthenticationProvider) {
                 userDetails = ref('userDetailsService')
